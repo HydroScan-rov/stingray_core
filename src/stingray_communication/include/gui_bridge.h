@@ -49,7 +49,7 @@ class GuiBridgeReceiver : public rclcpp::Node {
     void try_receive();
 
    private:
-    void from_gui_callback(const boost::system::error_code &error, size_t bytes_transferred);
+    void gui_request_callback(const boost::system::error_code &error, size_t bytes_transferred);
 
     // ROS publishers
     rclcpp::Publisher<std_msgs::msg::UInt8MultiArray>::SharedPtr requestMessagePublisher;

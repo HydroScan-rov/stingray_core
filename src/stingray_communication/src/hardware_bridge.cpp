@@ -49,7 +49,7 @@ void HardwareBridge::inputMessage_callback(const std_msgs::msg::UInt8MultiArray 
     for (int i = 0; i < ResponseNormalMessage::length; i++) {
         received_vector.push_back(msg.data[i]);
     }
-    bool ok = responseMessage.deserialize(received_vector);
+    bool ok = responseMessage.parse(received_vector);
     if (ok) {
         depthMessage.data = responseMessage.depth;  // Convert metres to centimetres
         RCLCPP_INFO(this->get_logger(), "Received depth: %f", responseMessage.depth);
@@ -157,7 +157,7 @@ void HardwareBridge::timerCallback() {
     if (isReady) {
         // Make output message
         std::vector<uint8_t> output_vector;
-        requestMessage.serialize(output_vector);
+        requestMessage.pack(output_vector);
         outputMessage.data.clear();
         for (int i = 0; i < RequestNormalMessage::length; i++) {
             outputMessage.data.push_back(output_vector[i]);

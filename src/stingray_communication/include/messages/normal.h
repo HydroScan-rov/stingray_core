@@ -3,31 +3,29 @@
 
 #include "messages/common.h"
 
-// pult -> cm4 -> stm
-struct RequestNormalMessage : public AbstractMessage {
+// pult -> cm4
+struct RequestNormalMessage : public AbstractMessage
+{
     RequestNormalMessage();
 
+    const static uint8_t length = 37; // 1(type) + 30(message) + 2(checksum) = 33 dyte
+
     const static uint8_t type = 0xA5;
-
-    const static uint8_t length = 34; // 1(type) + 30(message) + 2(checksum) = 33 dyte
-
-    uint8_t flags; // [0]thrusters_on, [1]reset_imu, [2]reset_depth, [3]rgb_light_on, [4]lower_light_on,
-
-    float march; // NED coordinate system
+    uint8_t connection_status;
+    uint8_t flags;        // [0]thrusters_on, [1]reset_imu, [2]reset_depth, [3]rgb_light_on, [4]lower_light_on,
+    uint8_t stab_flags;   // [0]march, [1]lag, [2]depth, [3]roll, [4]pitch, [5]yaw
+    uint8_t control_mode; // [0]handle , [1]auto (set depth and yaw, pitch and roll = 0), [2]maneuverable (set depth, yaw, pitch and roll)
+    float march;          // NED coordinate system
     float lag;
     float depth;
     float roll;
     float pitch;
     float yaw;
-
-    uint8_t stab_flags; // [0]march, [1]lag, [2]depth, [3]roll, [4]pitch, [5]yaw
-    uint8_t control_mode; // [0]handle , [1]auto (set depth and yaw, pitch and roll = 0), [2]maneuverable (set depth, yaw, pitch and roll)
-
+    uint16_t tilt;             // 1000-2000
     uint8_t power_lower_light; // 0-255
-    uint8_t r_rgb_light; // 0-255
+    uint8_t r_rgb_light;       // 0-255
     uint8_t g_rgb_light;
     uint8_t b_rgb_light;
-
     uint16_t checksum;
 
     bool thrusters_on;
@@ -47,12 +45,12 @@ struct RequestNormalMessage : public AbstractMessage {
     bool control_auto;
     bool control_maneuverable;
 
-    void serialize(std::vector<uint8_t>& container) override; // raspberry_cm4 to STM
-    bool deserialize(std::vector<uint8_t>& input) override; // pult to raspberry_cm4
+    bool parse(std::vector<uint8_t> &input) override; // pult to raspberry_cm4
 };
 
-// stm -> cm4 -> pult
-struct ResponseNormalMessage : public AbstractMessage {
+// cm4 -> pult
+struct ResponseNormalMessage : public AbstractMessage
+{
     ResponseNormalMessage();
 
     const static uint8_t length = 88; // 88(message) + 2(checksum) = 90 dyte
@@ -75,8 +73,7 @@ struct ResponseNormalMessage : public AbstractMessage {
 
     uint16_t checksum;
 
-    void serialize(std::vector<uint8_t>& container) override; // raspberry_cm4 to pult
-    bool deserialize(std::vector<uint8_t>& input) override; // STM to raspberry_cm4
+    void pack(std::vector<uint8_t> &container) override; // raspberry_cm4 to pult
 };
 
-#endif  // STINGRAY_MESSAGES_NORMAL_H
+#endif // STINGRAY_MESSAGES_NORMAL_H

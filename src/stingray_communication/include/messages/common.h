@@ -14,18 +14,16 @@ using json = nlohmann::json;
 
 /** Abstract class for all messages
  */
-struct AbstractMessage {
-    AbstractMessage();
+struct AbstractMessage
+{
+    AbstractMessage() = default;
 
-    virtual void serialize(std::vector<uint8_t> &container){
-        UNUSED(container);
-    };
-    virtual bool deserialize(std::vector<uint8_t> &container){
+    virtual void pack(std::vector<uint8_t> &container) { UNUSED(container); };
+    virtual bool parse(std::vector<uint8_t> &container)
+    {
         UNUSED(container);
         return false;
     };
-
-    json config;
 };
 
 void pushToVector(std::vector<uint8_t> &vector, int8_t var);
@@ -46,4 +44,4 @@ uint16_t getChecksum16b(std::vector<uint8_t> &msg);
 bool pickBit(uint8_t &input, uint8_t bit);
 void setBit(uint8_t &byte, uint8_t bit, bool state);
 
-#endif  // STINGRAY_MESSAGES_COMMON_H
+#endif // STINGRAY_MESSAGES_COMMON_H

@@ -1,13 +1,11 @@
 cmake_minimum_required(VERSION 3.8)
 project(stingray_communication)
 
-
-if (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    add_compile_options(-Wall -Wextra -Wpedantic)
-endif ()
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
 set(CMAKE_CXX_STANDARD 14)
-
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_index_cpp REQUIRED)
@@ -19,97 +17,115 @@ find_package(serial REQUIRED)
 find_package(stingray_communication_msgs REQUIRED)
 find_package(nlohmann_json REQUIRED)
 
+include_directories(include)
 
-include_directories(
-        include
-)
+add_executable(
+  uart_driver
+  src/uart_driver.cpp
+  include/uart_driver.h
+  src/messages/common.cpp
+  src/messages/stm.cpp
+  src/messages/config.cpp
+  src/messages/direct.cpp
+  src/messages/normal.cpp
+  include/messages/common.h
+  include/messages/stm.h
+  include/messages/config.h
+  include/messages/direct.h
+  include/messages/normal.h)
+ament_target_dependencies(
+  uart_driver
+  rclcpp
+  std_msgs
+  std_srvs
+  serial
+  stingray_communication_msgs
+  nlohmann_json
+  ament_index_cpp)
 
-add_executable(uart_driver
-        src/uart_driver.cpp
-        include/uart_driver.h
-        src/messages/common.cpp
-        src/messages/config.cpp
-        src/messages/direct.cpp
-        src/messages/normal.cpp
-        include/messages/common.h
-        include/messages/config.h
-        include/messages/direct.h
-        include/messages/normal.h
-        )
-ament_target_dependencies(uart_driver rclcpp std_msgs std_srvs serial stingray_communication_msgs  nlohmann_json ament_index_cpp)
+add_executable(
+  hardware_bridge
+  src/hardware_bridge.cpp
+  include/hardware_bridge.h
+  src/messages/common.cpp
+  src/messages/stm.cpp
+  src/messages/config.cpp
+  src/messages/direct.cpp
+  src/messages/normal.cpp
+  include/messages/common.h
+  include/messages/stm.h
+  include/messages/config.h
+  include/messages/direct.h
+  include/messages/normal.h)
+ament_target_dependencies(
+  hardware_bridge
+  rclcpp
+  std_msgs
+  std_srvs
+  serial
+  stingray_communication_msgs
+  nlohmann_json
+  ament_index_cpp)
 
-add_executable(hardware_bridge
-        src/hardware_bridge.cpp
-        include/hardware_bridge.h
-        src/messages/common.cpp
-        src/messages/config.cpp
-        src/messages/direct.cpp
-        src/messages/normal.cpp
-        include/messages/common.h
-        include/messages/config.h
-        include/messages/direct.h
-        include/messages/normal.h
-        )
-ament_target_dependencies(hardware_bridge rclcpp std_msgs std_srvs serial stingray_communication_msgs  nlohmann_json ament_index_cpp)
-
-add_executable(gui_bridge
-        src/gui_bridge.cpp
-        include/gui_bridge.h
-        src/messages/common.cpp
-        src/messages/config.cpp
-        src/messages/direct.cpp
-        src/messages/normal.cpp
-        include/messages/common.h
-        include/messages/config.h
-        include/messages/direct.h
-        include/messages/normal.h
-        )
-ament_target_dependencies(gui_bridge Boost rclcpp std_msgs std_srvs serial stingray_communication_msgs  nlohmann_json ament_index_cpp)
+add_executable(
+  gui_bridge
+  src/gui_bridge.cpp
+  include/gui_bridge.h
+  src/messages/common.cpp
+  src/messages/stm.cpp
+  src/messages/config.cpp
+  src/messages/direct.cpp
+  src/messages/normal.cpp
+  include/messages/common.h
+  include/messages/stm.h
+  include/messages/config.h
+  include/messages/direct.h
+  include/messages/normal.h)
+ament_target_dependencies(
+  gui_bridge
+  Boost
+  rclcpp
+  std_msgs
+  std_srvs
+  serial
+  stingray_communication_msgs
+  nlohmann_json
+  ament_index_cpp)
 
 add_library(
-        messages SHARED
-        src/messages/common.cpp
-        src/messages/config.cpp
-        src/messages/direct.cpp
-        src/messages/normal.cpp
-        include/messages/common.h
-        include/messages/config.h
-        include/messages/direct.h
-        include/messages/normal.h
-)
+  messages SHARED
+  src/messages/common.cpp
+  src/messages/stm.cpp
+  src/messages/config.cpp
+  src/messages/direct.cpp
+  src/messages/normal.cpp
+  include/messages/common.h
+  include/messages/stm.h
+  include/messages/config.h
+  include/messages/direct.h
+  include/messages/normal.h)
 
 # this line to exports the library
 ament_target_dependencies(messages rclcpp)
 
-target_include_directories(messages
-  PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-)
+target_include_directories(
+  messages PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                  $<INSTALL_INTERFACE:include>)
 
 ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
-ament_export_dependencies(
-  rclcpp
-)
+ament_export_dependencies(rclcpp)
 
+install(DIRECTORY include/ DESTINATION include)
 install(
-  DIRECTORY include/
-  DESTINATION include
-)
-install(TARGETS
-messages
+  TARGETS messages
   EXPORT export_${PROJECT_NAME}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include
-)
+  INCLUDES
+  DESTINATION include)
 
-
-install(TARGETS
-        hardware_bridge
-        uart_driver
-        gui_bridge
+install(TARGETS hardware_bridge uart_driver gui_bridge
         DESTINATION lib/${PROJECT_NAME})
 
 ament_export_dependencies(Boost)

@@ -1,13 +1,7 @@
 #include "messages/common.h"
-#include <ament_index_cpp/get_package_share_directory.hpp>
 
-AbstractMessage::AbstractMessage() {
-    // parse json config
-    std::string config_directory = ament_index_cpp::get_package_share_directory("stingray_config");
-    config = json::parse(std::ifstream(config_directory + "//communication.json"));
-}
-
-/** @brief Overloaded transform to string function, transforms value to string bitwise correctly
+/** @brief Overloaded transform to string function, transforms value to string
+ * bitwise correctly
  *
  * @param[in]  var     Variable to transform.
  * @param[in]  revert  Revert bytes or not.
@@ -17,14 +11,16 @@ void pushToVector(std::vector<uint8_t> &vector, int8_t var) {
     vector.push_back(buf);
 }
 
-/** @brief Overloaded transform to string function, transforms value to string bitwise correctly
+/** @brief Overloaded transform to string function, transforms value to string
+ * bitwise correctly
  *
  * @param[in]  var     Variable to transform.
  * @param[in]  revert  Revert bytes or not.
  */
 void pushToVector(std::vector<uint8_t> &vector, uint8_t var) { vector.push_back(var); }
 
-/** @brief Overloaded transform to string function, transforms value to string bitwise correctly
+/** @brief Overloaded transform to string function, transforms value to string
+ * bitwise correctly
  *
  * @param[in]  var     Variable to transform.
  * @param[in]  revert  Revert bytes or not.
@@ -40,7 +36,8 @@ void pushToVector(std::vector<uint8_t> &vector, int16_t var, bool revert) {
     }
 }
 
-/** @brief Overloaded transform to string function, transforms value to string bitwise correctly
+/** @brief Overloaded transform to string function, transforms value to string
+ * bitwise correctly
  *
  * @param[in]  var     Variable to transform.
  * @param[in]  revert  Revert bytes or not.
@@ -56,7 +53,8 @@ void pushToVector(std::vector<uint8_t> &vector, uint16_t var, bool revert) {
     }
 }
 
-/** @brief Overloaded transform to string function, transforms value to string bitwise correctly
+/** @brief Overloaded transform to string function, transforms value to string
+ * bitwise correctly
  *
  * @param[in]  var     Variable to transform.
  * @param[in]  revert  Revert bytes or not.
@@ -72,7 +70,8 @@ void pushToVector(std::vector<uint8_t> &vector, float var, bool revert) {
     }
 }
 
-/** @brief Overloaded transform to string function, transforms value to string bitwise correctly
+/** @brief Overloaded transform to string function, transforms value to string
+ * bitwise correctly
  *
  * @param[in]  var     Variable to transform.
  * @param[in]  revert  Revert bytes or not.
@@ -88,7 +87,8 @@ void pushToVector(std::vector<uint8_t> &vector, int32_t var, bool revert) {
     }
 }
 
-/** @brief Overloaded pick from string, picks value from the end of the string bitwise correctly
+/** @brief Overloaded pick from string, picks value from the end of the string
+ * bitwise correctly
  *
  * @param[out] &container  Link to container string with bytes.
  * @param[out] &value      Link to variable in which the data will be stored.
@@ -99,7 +99,8 @@ void popFromVector(std::vector<uint8_t> &vector, uint8_t &output) {
     vector.pop_back();
 }
 
-/** @brief Overloaded pick from string, picks value from the end of the string bitwise correctly
+/** @brief Overloaded pick from string, picks value from the end of the string
+ * bitwise correctly
  *
  * @param[out] &container  Link to container string with bytes.
  * @param[out] &value      Link to variable in which the data will be stored.
@@ -111,7 +112,8 @@ void popFromVector(std::vector<uint8_t> &vector, int8_t &output) {
     output = *reinterpret_cast<int8_t *>(&out_raw);
 }
 
-/** @brief Overloaded pick from string, picks value from the end of the string bitwise correctly
+/** @brief Overloaded pick from string, picks value from the end of the string
+ * bitwise correctly
  *
  * @param[out] &container  Link to container string with bytes.
  * @param[out] &value      Link to variable in which the data will be stored.
@@ -131,7 +133,8 @@ void popFromVector(std::vector<uint8_t> &vector, int16_t &output, bool revert) {
     vector.pop_back();
 }
 
-/** @brief Overloaded pick from string, picks value from the end of the string bitwise correctly
+/** @brief Overloaded pick from string, picks value from the end of the string
+ * bitwise correctly
  *
  * @param[out] &container  Link to container string with bytes.
  * @param[out] &value      Link to variable in which the data will be stored.
@@ -151,7 +154,8 @@ void popFromVector(std::vector<uint8_t> &vector, uint16_t &output, bool revert) 
     vector.pop_back();
 }
 
-/** @brief Overloaded pick from string, picks value from the end of the string bitwise correctly
+/** @brief Overloaded pick from string, picks value from the end of the string
+ * bitwise correctly
  *
  * @param[out] &container  Link to container string with bytes.
  * @param[out] &value      Link to variable in which the data will be stored.
@@ -189,9 +193,7 @@ uint16_t getChecksum16b(std::vector<uint8_t> &vector) {
     return crc;
 }
 
-bool pickBit(uint8_t &input, uint8_t bit) {
-    return static_cast<bool>((input << (8 - bit)) >> 8);
-}
+bool pickBit(uint8_t &input, uint8_t bit) { return static_cast<bool>((input << (8 - bit)) >> 8); }
 
 void setBit(uint8_t &byte, uint8_t bit, bool state) {
     uint8_t value = 1;
