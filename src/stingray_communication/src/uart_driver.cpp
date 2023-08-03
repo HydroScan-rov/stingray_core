@@ -6,7 +6,7 @@
 
 #include <fstream>
 #include "uart_driver.h"
-#include "messages/normal.h"
+#include "messages/stm.h"
 #include <ament_index_cpp/get_package_share_directory.hpp>
 
 UartDriver::UartDriver() : Node("UartDriver")
@@ -17,24 +17,18 @@ UartDriver::UartDriver() : Node("UartDriver")
     // Serial port initialization
     portInitialize();
     // ROS publishers
-    this->outputMessage_pub = this->create_publisher<std_msgs::msg::UInt8MultiArray>(ros_config["topics"]["from_driver_parcel"], 1000);
+    this->fromStmMessage_pub = this->create_publisher<std_msgs::msg::UInt8MultiArray>(ros_config["topics"]["from_driver_parcel"], 1);
     // ROS subscribers
-    this->inputMessage_sub = this->create_subscription<std_msgs::msg::UInt8MultiArray>(ros_config["topics"]["to_driver_parcel"], 1000,
+    this->toStmMessage_sub = this->create_subscription<std_msgs::msg::UInt8MultiArray>(ros_config["topics"]["to_driver_parcel"], 1,
                                                                                        std::bind(
-                                                                                           &UartDriver::inputMessage_callback,
+                                                                                           &UartDriver::toStmMessage_callback,
                                                                                            this, _1));
-    // Input message container
-    inputMessage.layout.dim.push_back(std_msgs::msg::MultiArrayDimension());
-    inputMessage.layout.dim[0].size = RequestNormalMessage::length;
-    inputMessage.layout.dim[0].stride = RequestNormalMessage::length;
-    inputMessage.layout.dim[0].label = "inputMessage";
-    inputMessage.data = {0};
     // Outnput message container
-    outputMessage.layout.dim.push_back(std_msgs::msg::MultiArrayDimension());
-    outputMessage.layout.dim[0].size = ResponseNormalMessage::length;
-    outputMessage.layout.dim[0].stride = ResponseNormalMessage::length;
-    outputMessage.layout.dim[0].label = "outputMessage";
-    outputMessage.data = {0};
+    fromStmMessage.layout.dim.push_back(std_msgs::msg::MultiArrayDimension());
+    fromStmMessage.layout.dim[0].size = StmResponseMessage::length;
+    fromStmMessage.layout.dim[0].stride = StmResponseMessage::length;
+    fromStmMessage.layout.dim[0].label = "fromStmMessage";
+    fromStmMessage.data = {0};
 }
 /**
  * Initialasing serial port
@@ -110,14 +104,11 @@ void UartDriver::portInitialize()
 
 bool UartDriver::sendData()
 {
-    std::vector<uint8_t> msg;
-    for (int i = 0; i < RequestNormalMessage::length; i++)
-        msg.push_back(inputMessage.data[i]);
-    size_t toWrite = sizeof(uint8_t) * msg.size();
+    size_t toWrite = sizeof(uint8_t) * toStmVector.size();
     try
     {
         port.flush();
-        size_t written = port.write(msg);
+        size_t written = port.write(toStmVector);
         return written == toWrite;
     }
     catch (serial::IOException &ex)
@@ -129,13 +120,13 @@ bool UartDriver::sendData()
 
 bool UartDriver::receiveData()
 {
-    if (port.available() < ResponseNormalMessage::length)
+    if (port.available() < StmResponseMessage::length)
         return false;
     std::vector<uint8_t> answer;
-    port.read(answer, ResponseNormalMessage::length);
-    outputMessage.data.clear();
-    for (int i = 0; i < ResponseNormalMessage::length; i++)
-        outputMessage.data.push_back(answer[i]);
+    port.read(answer, StmResponseMessage::length);
+    fromStmMessage.data.clear();
+    for (int i = 0; i < StmResponseMessage::length; i++)
+        fromStmMessage.data.push_back(answer[i]);
     RCLCPP_DEBUG(this->get_logger(), "RECEIVE FROM STM");
 
     return true;
@@ -145,14 +136,11 @@ bool UartDriver::receiveData()
  *
  * @param[in]  &input String to parse.
  */
-void UartDriver::inputMessage_callback(const std_msgs::msg::UInt8MultiArray::SharedPtr msg)
+void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray::SharedPtr msg)
 {
-    inputMessage.data.clear();
-    for (auto copy : msg->data) {
-        inputMessage.data.push_back(copy);
-    }
-    for (int i = 0; i < RequestNormalMessage::length; i++)
-        inputMessage.data.push_back(msg->data[i]);
+    toStmVector.clear();
+    for (auto byte : msg.data)
+        request_vector.push_back(byte);
     try
     {
         if (!port.isOpen())
@@ -173,7 +161,7 @@ void UartDriver::inputMessage_callback(const std_msgs::msg::UInt8MultiArray::Sha
         return;
     }
     if (receiveData())
-        outputMessage_pub->publish(outputMessage);
+        fromStmMessage_pub->publish(fromStmMessage);
     else
     {
         RCLCPP_ERROR(this->get_logger(), "Unable to receive message from STM32");

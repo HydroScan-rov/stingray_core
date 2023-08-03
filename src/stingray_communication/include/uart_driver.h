@@ -20,20 +20,20 @@ class UartDriver : public rclcpp::Node {
     UartDriver();
 
    private:
-    void inputMessage_callback(const std_msgs::msg::UInt8MultiArray::SharedPtr msg);
+    void toStmMessage_callback(const std_msgs::msg::UInt8MultiArray::SharedPtr msg);
     void portInitialize();
     bool sendData();
     bool receiveData();
 
     // ROS publishers
-    rclcpp::Publisher<std_msgs::msg::UInt8MultiArray>::SharedPtr outputMessage_pub;
+    rclcpp::Publisher<std_msgs::msg::UInt8MultiArray>::SharedPtr fromStmMessage_pub;
     // ROS subscribers
-    rclcpp::Subscription<std_msgs::msg::UInt8MultiArray>::SharedPtr inputMessage_sub;
+    rclcpp::Subscription<std_msgs::msg::UInt8MultiArray>::SharedPtr toStmMessage_sub;
     // Other
     serial::Serial port;  // serial port
     // Message containers
-    std_msgs::msg::UInt8MultiArray inputMessage;   // Hardware bridge -> Protocol_driver
-    std_msgs::msg::UInt8MultiArray outputMessage;  // Protocol_driver -> Hardware bridge
+    std::vector<uint8_t> toStmVector;   // Hardware bridge -> Protocol_driver
+    std_msgs::msg::UInt8MultiArray fromStmMessage;  // Protocol_driver -> Hardware bridge
     // get json config
     json ros_config;
     json com_config;
