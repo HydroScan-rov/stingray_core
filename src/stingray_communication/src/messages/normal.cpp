@@ -69,6 +69,7 @@ bool RequestNormalMessage::parse(std::vector<uint8_t> &input)
 
 ResponseNormalMessage::ResponseNormalMessage()
 {
+    connection_status = 0;
     depth = 0;
     roll = 0;
     pitch = 0;
