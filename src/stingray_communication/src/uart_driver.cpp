@@ -127,7 +127,7 @@ bool UartDriver::receiveData()
     fromStmMessage.data.clear();
     for (int i = 0; i < StmResponseMessage::length; i++)
         fromStmMessage.data.push_back(answer[i]);
-    RCLCPP_DEBUG(this->get_logger(), "RECEIVE FROM STM");
+    RCLCPP_INFO(this->get_logger(), "RECEIVE FROM STM");
 
     return true;
 }
@@ -138,6 +138,8 @@ bool UartDriver::receiveData()
  */
 void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray &msg)
 {
+            RCLCPP_INFO(this->get_logger(), "toStmMessage_callback");
+
     toStmVector.clear();
     for (auto byte : msg.data)
         toStmVector.push_back(byte);

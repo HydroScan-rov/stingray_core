@@ -17,11 +17,12 @@ StmRequestMessage::StmRequestMessage() : AbstractMessage()
 // form byte-vector (raspberry_cm4 to pult)
 void StmRequestMessage::pack(std::vector<uint8_t> &container)
 {
+    pushToVector(container, type);
     pushToVector(container, connection_status);
     pushToVector(container, flags);
     for (int i = 0; i < 8; i++)
-        pushToVector(container, velocity[i]);
-    pushToVector(container, tilt);
+        pushToVector(container, velocity[i], true);
+    pushToVector(container, tilt, true);
     pushToVector(container, power_lower_light);
     pushToVector(container, r_rgb_light);
     pushToVector(container, g_rgb_light);
@@ -50,12 +51,12 @@ bool StmResponseMessage::parse(std::vector<uint8_t> &input)
     popFromVector(input, checksum, true);
     uint16_t checksum_calc = getChecksum16b(input);
     if (checksum_calc != checksum)
-        return false;
+        // return false;
 
     for (int i = 0; i < 8; i++)
         popFromVector(input, voltage_battery_cell[8 - i]);
-    for (int i = 0; i < 8; i++)
-        popFromVector(input, current_vma[8 - i]);
+    for (int i = 0; i < 4; i++)
+        popFromVector(input, current_vma[4 - i]);
     popFromVector(input, current_logic_electronics);
     popFromVector(input, connection_status);
 

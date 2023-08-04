@@ -8,7 +8,7 @@ struct StmRequestMessage : public AbstractMessage
 {
     StmRequestMessage();
 
-    const static uint8_t length = 35; // 1(type) + 32(message) + 2(checksum) = 35 dyte
+    const static uint8_t length = 27; // 1(type) + 24(message) + 2(checksum) = 27 dyte
 
     const static uint8_t type = 0xA5;
 
@@ -31,14 +31,14 @@ struct StmResponseMessage : public AbstractMessage
 {
     StmResponseMessage();
 
-    const static uint8_t length = 56; // 1(type) + 53(message) + 2(checksum) = 56 dyte
+    const static uint8_t length = 30; // 1(type) + 27(message) + 2(checksum) = 30 dyte
 
     const static uint8_t type = 0xA5;
 
     uint8_t connection_status;
-    float_t current_logic_electronics; // from stm 
-    float_t current_vma[8];
-    float_t voltage_battery_cell[4];
+    uint16_t current_logic_electronics; // from stm 
+    uint16_t current_vma[8];
+    uint16_t voltage_battery_cell[4];
 
     uint16_t checksum;
 
