@@ -8,7 +8,7 @@ struct StmRequestMessage : public AbstractMessage
 {
     StmRequestMessage();
 
-    const static uint8_t length = 12; // 1(type) + 30(message) + 2(checksum) = 33 dyte
+    const static uint8_t length = 27; // 1(type) + 24(message) + 2(checksum) = 27 dyte
 
     const static uint8_t type = 0xA5;
     uint8_t connection_status;
@@ -29,13 +29,13 @@ struct StmResponseMessage : public AbstractMessage
 {
     StmResponseMessage();
 
-    const static uint8_t length = 15; // 1(type) + 30(message) + 2(checksum) = 33 dyte
+    const static uint8_t length = 30; // 1(type) + 27(message) + 2(checksum) = 30 dyte
 
     const static uint8_t type = 0xA5;
     uint8_t connection_status;
-    float_t current_logic_electronics; // from jetson + raspberry dc-dc
-    float_t current_vma[8];
-    float_t voltage_battery_cell[4];
+    uint16_t current_logic_electronics; // from jetson + raspberry dc-dc
+    uint16_t current_vma[8];
+    uint16_t voltage_battery_cell[4];
     uint16_t checksum;
 
     bool parse(std::vector<uint8_t> &input) override; // STM to raspberry_cm4
