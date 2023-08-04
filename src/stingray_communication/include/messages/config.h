@@ -9,6 +9,7 @@ struct RequestConfigMessage : public AbstractMessage
     RequestConfigMessage();
 
     const static uint8_t length = 95; // 1(type) + 92(message) + 2(checksum) = 95 dyte
+    const static uint8_t length = 95; // 1(type) + 92(message) + 2(checksum) = 95 dyte
 
     const static uint8_t type = 0x55;
 
@@ -61,7 +62,7 @@ struct RequestConfigMessage : public AbstractMessage
     bool current_pitch;
     bool current_yaw;
 
-    bool parse(std::vector<uint8_t> &input) override; // pult to raspberry_cm4
+    bool parse(std::vector<uint8_t>& input) override; // pult to raspberry_cm4
 };
 
 // stm -> cm4 -> pult
@@ -97,9 +98,9 @@ struct ResponseConfigMessage : public AbstractMessage
     float_t voltage_battery_cell[4];
     float_t voltage_battery; // 56
 
-    uint16_t checksum; // 136(message) + 2(checksum) = 138 dyte
+    uint16_t checksum;
 
-    void pack(std::vector<uint8_t> &container) override; // raspberry_cm4 to pult
+    void pack(std::vector<uint8_t>& container) override; // raspberry_cm4 to pult
 };
 
 #endif // STINGRAY_MESSAGES_CONFIG_H
