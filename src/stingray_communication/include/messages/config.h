@@ -9,7 +9,6 @@ struct RequestConfigMessage : public AbstractMessage
     RequestConfigMessage();
 
     const static uint8_t length = 95; // 1(type) + 92(message) + 2(checksum) = 95 dyte
-    const static uint8_t length = 95; // 1(type) + 92(message) + 2(checksum) = 95 dyte
 
     const static uint8_t type = 0x55;
 
