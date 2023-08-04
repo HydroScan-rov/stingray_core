@@ -10,6 +10,7 @@ struct RequestDirectMessage : public AbstractMessage
     const static uint8_t length = 24; // 1(type) + 21(message) + 2(checksum) = 24 dyte
 
     const static uint8_t type = 0xAA;
+    uint8_t connection_status;
 
     uint8_t flags;        // [0]thrusters_on, [1]reset_imu, [2]reset_depth, [3]rgb_light_on, [4]lower_light_on,
     uint8_t id;           // 0..7
