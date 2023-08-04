@@ -20,7 +20,7 @@ class UartDriver : public rclcpp::Node {
     UartDriver();
 
    private:
-    void toStmMessage_callback(const std_msgs::msg::UInt8MultiArray::SharedPtr msg);
+    void toStmMessage_callback(const std_msgs::msg::UInt8MultiArray& msg);
     void portInitialize();
     bool sendData();
     bool receiveData();

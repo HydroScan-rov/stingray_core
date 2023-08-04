@@ -136,11 +136,11 @@ bool UartDriver::receiveData()
  *
  * @param[in]  &input String to parse.
  */
-void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray::SharedPtr msg)
+void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray &msg)
 {
     toStmVector.clear();
     for (auto byte : msg.data)
-        request_vector.push_back(byte);
+        toStmVector.push_back(byte);
     try
     {
         if (!port.isOpen())
