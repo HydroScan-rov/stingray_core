@@ -1,19 +1,19 @@
 #include "messages/config.h"
 
 // pult -> cm4 -> stm
-RequestConfigMessage::RequestConfigMessage() : AbstractMessage()
-{
+RequestConfigMessage::RequestConfigMessage() : AbstractMessage() {
     connection_status = 0;
     flags = 0;
     stab_flags = 0;
     current_contour = 0;
+
     march = 0;
     lag = 0;
     depth = 0;
     roll = 0;
     pitch = 0;
     yaw = 0;
-    dt = 0;
+
     k_joy = 0;
     k_tuning = 0;
     pid_kp = 0;
@@ -25,8 +25,9 @@ RequestConfigMessage::RequestConfigMessage() : AbstractMessage()
     pid_min = 0;
     posFilter_t = 0;
     posFilter_k = 0;
-    speedFilter_y = 0;
+    speedFilter_t = 0;
     speedFilter_k = 0;
+    out_k = 0;
     out_max = 0;
     out_min = 0;
 
@@ -54,8 +55,7 @@ RequestConfigMessage::RequestConfigMessage() : AbstractMessage()
 }
 
 // stm -> cm4 -> pult
-ResponseConfigMessage::ResponseConfigMessage() : AbstractMessage()
-{
+ResponseConfigMessage::ResponseConfigMessage() : AbstractMessage() {
     connection_status = 0;
     depth = 0;
     roll = 0;
@@ -63,32 +63,29 @@ ResponseConfigMessage::ResponseConfigMessage() : AbstractMessage()
     yaw = 0;
 
     input = 0;
+    pos = 0;
     pos_filtered = 0;
+    speed = 0;
     speed_filtered = 0;
-
     joy_gained = 0;
     target_integrator = 0;
-
-    pid_pre_error = 0;
     pid_error = 0;
-    pid_integral = 0;
     pid_Pout = 0;
+    pid_I_gained = 0;
     pid_Iout = 0;
     pid_Dout = 0;
+    pid_SumOut = 0;
     pid_output = 0;
-
     tuning_summator = 0;
     speed_error = 0;
     out_pre_saturation = 0;
     out = 0;
 
     current_logic_electronics = 0;
-    for (int i = 0; i < 8; i++)
-    {
+    for (int i = 0; i < 8; i++) {
         current_vma[i] = 0;
     }
-    for (int i = 0; i < 4; i++)
-    {
+    for (int i = 0; i < 4; i++) {
         voltage_battery_cell[i] = 0;
     }
     voltage_battery = 0;
@@ -96,24 +93,21 @@ ResponseConfigMessage::ResponseConfigMessage() : AbstractMessage()
     checksum = 0;
 }
 
-// pull message from byte-vector (pult to raspberry_cm4)
-bool RequestConfigMessage::parse(std::vector<uint8_t> &input)
-{
+// pull message from byte-vector (pult -> cm4)
+bool RequestConfigMessage::parse(std::vector<uint8_t>& input) {
     popFromVector(input, checksum, true);
     uint16_t checksum_calc = getChecksum16b(input);
-    if (checksum_calc != checksum)
-    {
+    if (checksum_calc != checksum) {
         return false;
     }
 
     popFromVector(input, out_min);
     popFromVector(input, out_max);
-
+    popFromVector(input, out_k);
     popFromVector(input, speedFilter_k);
-    popFromVector(input, speedFilter_y);
+    popFromVector(input, speedFilter_t);
     popFromVector(input, posFilter_k);
     popFromVector(input, posFilter_t);
-
     popFromVector(input, pid_min);
     popFromVector(input, pid_max);
     popFromVector(input, pid_min_i);
@@ -121,10 +115,8 @@ bool RequestConfigMessage::parse(std::vector<uint8_t> &input)
     popFromVector(input, pid_kd);
     popFromVector(input, pid_ki);
     popFromVector(input, pid_kp);
-
     popFromVector(input, k_tuning);
     popFromVector(input, k_joy);
-    popFromVector(input, dt);
 
     popFromVector(input, yaw);
     popFromVector(input, pitch);
@@ -134,7 +126,6 @@ bool RequestConfigMessage::parse(std::vector<uint8_t> &input)
     popFromVector(input, march);
 
     popFromVector(input, current_contour);
-
     popFromVector(input, stab_flags);
     popFromVector(input, flags);
     popFromVector(input, connection_status);
@@ -162,30 +153,33 @@ bool RequestConfigMessage::parse(std::vector<uint8_t> &input)
     return true;
 }
 
-// form byte-vector (raspberry_cm4 to pult)
-void ResponseConfigMessage::pack(std::vector<uint8_t> &container)
-{
-    pushToVector(container, connection_status);
+// form byte-vector (cm4 -> pult)
+void ResponseConfigMessage::pack(std::vector<uint8_t>& container) {
+    pushToVector(container, reseived_connection_status);
     pushToVector(container, depth);
     pushToVector(container, roll);
     pushToVector(container, pitch);
     pushToVector(container, yaw);
+
     pushToVector(container, input);
+    pushToVector(container, pos);
     pushToVector(container, pos_filtered);
+    pushToVector(container, speed);
     pushToVector(container, speed_filtered);
     pushToVector(container, joy_gained);
     pushToVector(container, target_integrator);
-    pushToVector(container, pid_pre_error);
     pushToVector(container, pid_error);
-    pushToVector(container, pid_integral);
     pushToVector(container, pid_Pout);
+    pushToVector(container, pid_I_gained);
     pushToVector(container, pid_Iout);
     pushToVector(container, pid_Dout);
+    pushToVector(container, pid_SumOut);
     pushToVector(container, pid_output);
     pushToVector(container, tuning_summator);
     pushToVector(container, speed_error);
     pushToVector(container, out_pre_saturation);
     pushToVector(container, out);
+
     pushToVector(container, current_logic_electronics);
     for (int i = 0; i < 8; i++)
         pushToVector(container, current_vma[i]);
