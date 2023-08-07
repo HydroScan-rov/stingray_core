@@ -1,7 +1,6 @@
 #include "messages/stm.h"
 
-StmRequestMessage::StmRequestMessage() : AbstractMessage()
-{
+StmRequestMessage::StmRequestMessage() : AbstractMessage() {
     connection_status = 0;
     flags = 0;
     for (int i = 0; i < 8; i++)
@@ -14,9 +13,17 @@ StmRequestMessage::StmRequestMessage() : AbstractMessage()
     checksum = 0;
 }
 
+void StmRequestMessage::setFlags(bool thrusters_on, bool rgb_light_on, bool lower_light_on) {
+    uint8_t flags;
+    setBit(flags, 0, thrusters_on);
+    setBit(flags, 1, rgb_light_on);
+    setBit(flags, 2, lower_light_on);
+
+    this->flags = flags;
+}
+
 // form byte-vector (raspberry_cm4 to pult)
-void StmRequestMessage::pack(std::vector<uint8_t> &container)
-{
+void StmRequestMessage::pack(std::vector<uint8_t>& container) {
     pushToVector(container, type);
     pushToVector(container, connection_status);
     pushToVector(container, flags);
@@ -30,10 +37,9 @@ void StmRequestMessage::pack(std::vector<uint8_t> &container)
 
     uint16_t checksum = getChecksum16b(container);
     pushToVector(container, checksum); // do i need to revert bytes here?
-};
+}
 
-StmResponseMessage::StmResponseMessage()
-{
+StmResponseMessage::StmResponseMessage() {
     connection_status = 0;
     current_logic_electronics = 0;
     for (int i = 0; i < 4; i++)
@@ -45,14 +51,13 @@ StmResponseMessage::StmResponseMessage()
 }
 
 // pull message from byte-vector (pult to raspberry_cm4)
-bool StmResponseMessage::parse(std::vector<uint8_t> &input)
-{
+bool StmResponseMessage::parse(std::vector<uint8_t>& input) {
     // get checksum
     popFromVector(input, checksum, true);
     uint16_t checksum_calc = getChecksum16b(input);
     if (checksum_calc != checksum)
-        // return false;
-
+        return false;
+        
     for (int i = 0; i < 8; i++)
         popFromVector(input, voltage_battery_cell[8 - i]);
     for (int i = 0; i < 4; i++)
