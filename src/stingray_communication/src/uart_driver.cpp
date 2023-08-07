@@ -120,8 +120,10 @@ bool UartDriver::sendData()
 
 bool UartDriver::receiveData()
 {
-    if (port.available() < StmResponseMessage::length)
+    if (port.available() < StmResponseMessage::length) {
+        RCLCPP_ERROR(this->get_logger(), "Port not avaliable. Error: %s", port.available());
         return false;
+    }
     std::vector<uint8_t> answer;
     port.read(answer, StmResponseMessage::length);
     fromStmMessage.data.clear();
@@ -162,6 +164,9 @@ void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray &msg
         RCLCPP_ERROR(this->get_logger(), "Unable to send message to STM32");
         return;
     }
+    else
+        RCLCPP_ERROR(this->get_logger(), "Successfully sent to STM32");
+
     if (receiveData())
         fromStmMessage_pub->publish(fromStmMessage);
     else
