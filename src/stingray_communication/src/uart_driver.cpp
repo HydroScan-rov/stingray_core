@@ -105,6 +105,8 @@ void UartDriver::portInitialize()
 bool UartDriver::sendData()
 {
     size_t toWrite = sizeof(uint8_t) * toStmVector.size();
+    RCLCPP_INFO(this->get_logger(), "Size: %d", int(toWrite));
+
     try
     {
         port.flush();
@@ -120,7 +122,8 @@ bool UartDriver::sendData()
 
 bool UartDriver::receiveData()
 {
-    if (port.available() < StmResponseMessage::length) {
+    if (port.available() < StmResponseMessage::length)
+    {
         RCLCPP_ERROR(this->get_logger(), "Port not avaliable. Error: %s", port.available());
         return false;
     }
@@ -140,11 +143,15 @@ bool UartDriver::receiveData()
  */
 void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray &msg)
 {
-            RCLCPP_INFO(this->get_logger(), "toStmMessage_callback");
+    RCLCPP_INFO(this->get_logger(), "toStmMessage_callback");
 
     toStmVector.clear();
-    for (auto byte : msg.data)
-        toStmVector.push_back(byte);
+    for (int i = 0; i < StmRequestMessage::length; i++)
+        toStmVector.push_back(msg.data[i]);
+
+    for (char i: toStmVector):
+        RCLCPP_INFO(this->get_logger(), "toStmMessage_callback %c", i);
+    
     try
     {
         if (!port.isOpen())
