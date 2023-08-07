@@ -149,9 +149,6 @@ void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray &msg
     for (int i = 0; i < StmRequestMessage::length; i++)
         toStmVector.push_back(msg.data[i]);
 
-    for (char i: toStmVector):
-        RCLCPP_INFO(this->get_logger(), "toStmMessage_callback %c", i);
-    
     try
     {
         if (!port.isOpen())
