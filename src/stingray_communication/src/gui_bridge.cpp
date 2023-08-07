@@ -16,7 +16,7 @@ GuiBridgeSender::GuiBridgeSender(boost::asio::io_service &io_service) : Node("Gu
 
     // ROS subscribers
     this->responseMessageSubscriber = this->create_subscription<std_msgs::msg::UInt8MultiArray>(
-        ros_config["topics"]["from_driver_parcel"], 1000, std::bind(&GuiBridgeSender::from_driver_callback, this, std::placeholders::_1));
+        ros_config["topics"]["from_driver_parcel"], 1, std::bind(&GuiBridgeSender::from_driver_callback, this, std::placeholders::_1));
 }
 
 GuiBridgeSender::~GuiBridgeSender() { _send_socket.close(); }
