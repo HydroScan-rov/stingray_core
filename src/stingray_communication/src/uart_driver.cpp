@@ -170,12 +170,19 @@ void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray &msg
     }
     else
         RCLCPP_ERROR(this->get_logger(), "Successfully sent to STM32");
-
-    if (receiveData())
-        fromStmMessage_pub->publish(fromStmMessage);
-    else
+    try
     {
-        RCLCPP_ERROR(this->get_logger(), "Unable to receive message from STM32");
+        if (receiveData())
+            fromStmMessage_pub->publish(fromStmMessage);
+        else
+        {
+            RCLCPP_ERROR(this->get_logger(), "Unable to receive message from STM32");
+            return;
+        }
+    }
+    catch (serial::IOException &ex)
+    {
+        RCLCPP_ERROR(this->get_logger(), "Serial exception when trying to receive data. Error: %s", ex.what());
         return;
     }
 }
