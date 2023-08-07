@@ -27,7 +27,7 @@ class GuiBridgeSender : public rclcpp::Node {
     ~GuiBridgeSender();
 
    private:
-    void from_driver_callback(const std_msgs::msg::UInt8MultiArray &msg);
+    void from_bridge_callback(const std_msgs::msg::UInt8MultiArray &msg);
 
     // get json config
     json ros_config;
