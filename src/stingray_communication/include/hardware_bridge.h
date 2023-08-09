@@ -37,17 +37,17 @@ public:
     HardwareBridge();
 
 private:
-    void inputMessage_callback(const std_msgs::msg::UInt8MultiArray &msg);
+    void inputMessage_callback(const std_msgs::msg::UInt8MultiArray& msg);
     void horizontalMoveCallback(const std::shared_ptr<stingray_communication_msgs::srv::SetHorizontalMove::Request> request,
-                                std::shared_ptr<stingray_communication_msgs::srv::SetHorizontalMove::Response> response);
+        std::shared_ptr<stingray_communication_msgs::srv::SetHorizontalMove::Response> response);
     void depthCallback(const std::shared_ptr<stingray_communication_msgs::srv::SetInt16::Request> request,
-                       std::shared_ptr<stingray_communication_msgs::srv::SetInt16::Response> response);
+        std::shared_ptr<stingray_communication_msgs::srv::SetInt16::Response> response);
     void imuCallback(const std::shared_ptr<std_srvs::srv::SetBool::Request> request,
-                     std::shared_ptr<std_srvs::srv::SetBool::Response> response);
+        std::shared_ptr<std_srvs::srv::SetBool::Response> response);
     void deviceActionCallback(const std::shared_ptr<stingray_communication_msgs::srv::SetDeviceAction::Request> request,
-                              std::shared_ptr<stingray_communication_msgs::srv::SetDeviceAction::Response> response);
+        std::shared_ptr<stingray_communication_msgs::srv::SetDeviceAction::Response> response);
     void stabilizationCallback(const std::shared_ptr<stingray_communication_msgs::srv::SetStabilization::Request> request,
-                               std::shared_ptr<stingray_communication_msgs::srv::SetStabilization::Response> response);
+        std::shared_ptr<stingray_communication_msgs::srv::SetStabilization::Response> response);
     void timerCallback();
 
     // ROS publishers

@@ -1,8 +1,7 @@
 #include "gui_bridge.h"
 #include <ament_index_cpp/get_package_share_directory.hpp>
 
-GuiBridgeSender::GuiBridgeSender(boost::asio::io_service &io_service) : Node("GuiBridgeSender"), _io_service(io_service), _send_socket(io_service)
-{
+GuiBridgeSender::GuiBridgeSender(boost::asio::io_service& io_service) : Node("GuiBridgeSender"), _io_service(io_service), _send_socket(io_service) {
     std::string config_directory = ament_index_cpp::get_package_share_directory("stingray_config");
     ros_config = json::parse(std::ifstream(config_directory + "/ros.json"));
     com_config = json::parse(std::ifstream(config_directory + "/communication.json"));
@@ -12,7 +11,7 @@ GuiBridgeSender::GuiBridgeSender(boost::asio::io_service &io_service) : Node("Gu
         udp::endpoint(address::from_string(com_config["bridges"]["gui"]["send_to_ip"]), com_config["bridges"]["gui"]["send_to_port"].get<int>());
     _send_socket.open(udp::v4());
     RCLCPP_INFO(this->get_logger(), "GuiBridgeSender: socket opened. Address: %s, port: %d",
-                com_config["bridges"]["gui"]["send_to_ip"].get<std::string>().c_str(), com_config["bridges"]["gui"]["send_to_port"].get<int>());
+        com_config["bridges"]["gui"]["send_to_ip"].get<std::string>().c_str(), com_config["bridges"]["gui"]["send_to_port"].get<int>());
 
     // ROS subscribers
     this->responseMessageSubscriber = this->create_subscription<std_msgs::msg::UInt8MultiArray>(
@@ -21,16 +20,14 @@ GuiBridgeSender::GuiBridgeSender(boost::asio::io_service &io_service) : Node("Gu
 
 GuiBridgeSender::~GuiBridgeSender() { _send_socket.close(); }
 
-void GuiBridgeSender::from_bridge_callback(const std_msgs::msg::UInt8MultiArray &msg)
-{
+void GuiBridgeSender::from_bridge_callback(const std_msgs::msg::UInt8MultiArray& msg) {
     boost::system::error_code err;
     _send_socket.send_to(boost::asio::buffer(msg.data), _send_endpoint, 0, err);
     RCLCPP_INFO(this->get_logger(), "Sent to gui %s", err.message().c_str());
 }
 
-GuiBridgeReceiver::GuiBridgeReceiver(boost::asio::io_service &io_service)
-    : Node("GuiBridgeReceiver"), _io_service(io_service), _receive_socket(io_service)
-{
+GuiBridgeReceiver::GuiBridgeReceiver(boost::asio::io_service& io_service)
+    : Node("GuiBridgeReceiver"), _io_service(io_service), _receive_socket(io_service) {
     std::string config_directory = ament_index_cpp::get_package_share_directory("stingray_config");
     ros_config = json::parse(std::ifstream(config_directory + "/ros.json"));
     com_config = json::parse(std::ifstream(config_directory + "/communication.json"));
@@ -41,19 +38,17 @@ GuiBridgeReceiver::GuiBridgeReceiver(boost::asio::io_service &io_service)
     // UDP receiver
     _receive_socket.open(udp::v4());
     _receive_socket.bind(udp::endpoint(address::from_string(com_config["bridges"]["gui"]["receive_from_ip"]),
-                                       com_config["bridges"]["gui"]["receive_from_port"].get<int>()));
+        com_config["bridges"]["gui"]["receive_from_port"].get<int>()));
     RCLCPP_INFO(this->get_logger(), "GuiBridgeReceiver: socket binded to address: %s, port: %d",
-                com_config["bridges"]["gui"]["receive_from_ip"].get<std::string>().c_str(),
-                com_config["bridges"]["gui"]["receive_from_port"].get<int>());
+        com_config["bridges"]["gui"]["receive_from_ip"].get<std::string>().c_str(),
+        com_config["bridges"]["gui"]["receive_from_port"].get<int>());
 }
 
 GuiBridgeReceiver::~GuiBridgeReceiver() { _receive_socket.close(); }
 
-void GuiBridgeReceiver::gui_request_callback(const boost::system::error_code &error, size_t bytes_transferred)
-{
+void GuiBridgeReceiver::gui_request_callback(const boost::system::error_code& error, size_t bytes_transferred) {
     // Make output message
-    if (error)
-    {
+    if (error) {
         RCLCPP_ERROR(this->get_logger(), "Receive failed: %s", error.message().c_str());
         return;
     }
@@ -69,8 +64,7 @@ void GuiBridgeReceiver::gui_request_callback(const boost::system::error_code &er
     try_receive();
 }
 
-void GuiBridgeReceiver::try_receive()
-{
+void GuiBridgeReceiver::try_receive() {
     RCLCPP_INFO(this->get_logger(), "Trying to receive from gui...");
     // std::this_thread::sleep_for(std::chrono::milliseconds(500));
     _receive_socket.async_receive_from(
@@ -78,17 +72,16 @@ void GuiBridgeReceiver::try_receive()
         boost::bind(&GuiBridgeReceiver::gui_request_callback, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char* argv[]) {
     rclcpp::init(argc, argv);
     rclcpp::executors::MultiThreadedExecutor executor;
     boost::asio::io_service io_service;
     auto sender = std::make_shared<GuiBridgeSender>(io_service);
     auto receiver = std::make_shared<GuiBridgeReceiver>(io_service);
     std::thread s([&]
-                  {
-        receiver->try_receive();
-        io_service.run(); });
+        {
+            receiver->try_receive();
+            io_service.run(); });
     executor.add_node(sender);
     executor.add_node(receiver);
     executor.spin();

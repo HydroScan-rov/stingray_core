@@ -47,7 +47,7 @@ struct RequestNormalMessage : public AbstractMessage
     bool control_auto;
     bool control_maneuverable;
 
-    bool parse(std::vector<uint8_t> &input) override; // pult to raspberry_cm4
+    bool parse(std::vector<uint8_t>& input) override; // pult to raspberry_cm4
 };
 
 // cm4 -> pult
@@ -74,7 +74,7 @@ struct ResponseNormalMessage : public AbstractMessage
 
     uint16_t checksum;
 
-    void pack(std::vector<uint8_t> &container) override; // raspberry_cm4 to pult
+    void pack(std::vector<uint8_t>& container) override; // raspberry_cm4 to pult
 };
 
 #endif // STINGRAY_MESSAGES_NORMAL_H

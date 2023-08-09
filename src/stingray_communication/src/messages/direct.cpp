@@ -1,8 +1,7 @@
 #include "messages/direct.h"
 
 // pult -> cm4 -> stm
-RequestDirectMessage::RequestDirectMessage() : AbstractMessage()
-{
+RequestDirectMessage::RequestDirectMessage() : AbstractMessage() {
     connection_status = 0;
     flags = 0;
     id = 0;
@@ -23,8 +22,7 @@ RequestDirectMessage::RequestDirectMessage() : AbstractMessage()
 }
 
 // stm -> cm4 -> pult
-ResponseDirectMessage::ResponseDirectMessage() : AbstractMessage()
-{
+ResponseDirectMessage::ResponseDirectMessage() : AbstractMessage() {
     connection_status = 0;
     current_logic_electronics = 0;
     for (int i = 0; i < 8; i++)
@@ -35,12 +33,10 @@ ResponseDirectMessage::ResponseDirectMessage() : AbstractMessage()
 }
 
 // pult to raspberry_cm4
-bool RequestDirectMessage::parse(std::vector<uint8_t> &input)
-{
+bool RequestDirectMessage::parse(std::vector<uint8_t>& input) {
     popFromVector(input, checksum, true);
     uint16_t checksum_calc = getChecksum16b(input);
-    if (checksum_calc != checksum)
-    {
+    if (checksum_calc != checksum) {
         return false;
     }
     popFromVector(input, s_backward);
@@ -64,8 +60,7 @@ bool RequestDirectMessage::parse(std::vector<uint8_t> &input)
 }
 
 // form byte-vector (raspberry_cm4 to pult)
-void ResponseDirectMessage::pack(std::vector<uint8_t> &container)
-{
+void ResponseDirectMessage::pack(std::vector<uint8_t>& container) {
     pushToVector(container, type);
     pushToVector(container, connection_status);
     pushToVector(container, current_logic_electronics);

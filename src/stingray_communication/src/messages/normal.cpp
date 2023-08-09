@@ -1,7 +1,6 @@
 #include "messages/normal.h"
 
-RequestNormalMessage::RequestNormalMessage() : AbstractMessage()
-{
+RequestNormalMessage::RequestNormalMessage() : AbstractMessage() {
     connection_status = 0;
     flags = 0;
     stab_flags = 0;
@@ -21,13 +20,11 @@ RequestNormalMessage::RequestNormalMessage() : AbstractMessage()
 }
 
 // pull message from byte-vector (pult to raspberry_cm4)
-bool RequestNormalMessage::parse(std::vector<uint8_t> &input)
-{
+bool RequestNormalMessage::parse(std::vector<uint8_t>& input) {
     // get checksum
     popFromVector(input, checksum, true);
     uint16_t checksum_calc = getChecksum16b(input);
-    if (checksum_calc != checksum)
-    {
+    if (checksum_calc != checksum) {
         return false;
     }
 
@@ -67,8 +64,7 @@ bool RequestNormalMessage::parse(std::vector<uint8_t> &input)
     return true;
 }
 
-ResponseNormalMessage::ResponseNormalMessage()
-{
+ResponseNormalMessage::ResponseNormalMessage() {
     connection_status = 0;
     depth = 0;
     roll = 0;
@@ -91,8 +87,7 @@ ResponseNormalMessage::ResponseNormalMessage()
 }
 
 // form byte-vector (raspberry_cm4 to pult)
-void ResponseNormalMessage::pack(std::vector<uint8_t> &container)
-{
+void ResponseNormalMessage::pack(std::vector<uint8_t>& container) {
     pushToVector(container, type);
     pushToVector(container, connection_status);
     pushToVector(container, depth);

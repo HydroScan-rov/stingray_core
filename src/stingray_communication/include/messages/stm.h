@@ -23,7 +23,7 @@ struct StmRequestMessage : public AbstractMessage
 
     uint16_t checksum;
 
-    void pack(std::vector<uint8_t> &container) override; // STM to raspberry_cm4
+    void pack(std::vector<uint8_t>& container) override; // STM to raspberry_cm4
 };
 
 // stm -> cm4
@@ -35,13 +35,13 @@ struct StmResponseMessage : public AbstractMessage
 
     const static uint8_t type = 0xA5;
     uint8_t connection_status;
-    uint16_t current_logic_electronics; 
+    uint16_t current_logic_electronics;
     uint16_t current_vma[8];
     uint16_t voltage_battery_cell[4];
 
     uint16_t checksum;
 
-    bool parse(std::vector<uint8_t> &input) override; // STM to raspberry_cm4
+    bool parse(std::vector<uint8_t>& input) override; // STM to raspberry_cm4
 };
 
 #endif // STINGRAY_MESSAGES_STM_H
