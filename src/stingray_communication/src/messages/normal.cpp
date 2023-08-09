@@ -82,14 +82,10 @@ ResponseNormalMessage::ResponseNormalMessage()
     speed_right = 0;
 
     current_logic_electronics = 0;
-    for (int i = 0; i < 4; i++)
-    {
-        current_vma[i] = 0;
-    }
     for (int i = 0; i < 8; i++)
-    {
+        current_vma[i] = 0;
+    for (int i = 0; i < 4; i++)
         voltage_battery_cell[i] = 0;
-    }
 
     checksum = 0;
 }
@@ -98,6 +94,7 @@ ResponseNormalMessage::ResponseNormalMessage()
 void ResponseNormalMessage::pack(std::vector<uint8_t> &container)
 {
     pushToVector(container, type);
+    pushToVector(container, connection_status);
     pushToVector(container, depth);
     pushToVector(container, roll);
     pushToVector(container, pitch);
@@ -111,13 +108,9 @@ void ResponseNormalMessage::pack(std::vector<uint8_t> &container)
 
     pushToVector(container, current_logic_electronics);
     for (int i = 0; i < 8; i++)
-    {
         pushToVector(container, current_vma[i]);
-    }
     for (int i = 0; i < 4; i++)
-    {
         pushToVector(container, voltage_battery_cell[i]);
-    }
 
     uint16_t checksum = getChecksum16b(container);
     pushToVector(container, checksum); // do i need to revert bytes here?

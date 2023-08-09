@@ -10,10 +10,10 @@ struct RequestConfigMessage : public AbstractMessage
     const static uint8_t length = 95; // 1(type) + 92(message) + 2(checksum) = 95 dyte
 
     const static uint8_t type = 0x55;
-
     uint8_t connection_status;
-    uint8_t flags;           // [0]thrusters_on, [1]reset_imu, [2]reset_depth, [3]rgb_light_on, [4]lower_light_on,
-    uint8_t stab_flags;      // stab [0]march, [1]lag, [2]depth, [3]roll, [4]pitch, [5]yaw, [6]thrusters_on, [6]reset_imu
+
+    uint8_t flags; // [0]thrusters_on, [1]reset_imu, [2]reset_depth, [3]rgb_light_on, [4]lower_light_on,
+    uint8_t stab_flags; // stab [0]march, [1]lag, [2]depth, [3]roll, [4]pitch, [5]yaw, [6]thrusters_on, [6]reset_imu
     uint8_t current_circuit; // current contour: [0]march, [1]lag, [2]depth, [3]roll, [4]pitch, [5]yaw
 
     float_t march;
@@ -62,7 +62,7 @@ struct RequestConfigMessage : public AbstractMessage
     bool current_pitch;
     bool current_yaw;
 
-    bool parse(std::vector<uint8_t> &input) override; // pult -> cm4
+    bool parse(std::vector<uint8_t>& input) override; // pult -> cm4
 };
 
 // cm4 -> pult
@@ -70,10 +70,9 @@ struct ResponseConfigMessage : public AbstractMessage
 {
     ResponseConfigMessage();
 
-    const static uint8_t length = 118; // 1(type) + 115(message) + 2(checksum) = 139 dyte
+    const static uint8_t length = 118; // 1(type) + 115(message) + 2(checksum) = 118 dyte
 
     const static uint8_t type = 0x55;
-
     uint8_t connection_status;
 
     float_t depth;
@@ -102,11 +101,11 @@ struct ResponseConfigMessage : public AbstractMessage
 
     uint16_t current_logic_electronics; // from jetson + raspberry dc-dc
     uint16_t current_vma[8];
-    uint16_t voltage_battery_cell[4];
+    uint16_t voltage_battery_cell[4]; // [0]: 1st sell; [1]: 1+2; [2]: 1+2+3; [3]: 1+2+3+4 (full battery)
 
     uint16_t checksum;
 
-    void pack(std::vector<uint8_t> &container) override; // cm4 -> pult
+    void pack(std::vector<uint8_t>& container) override; // cm4 -> pult
 };
 
 #endif // STINGRAY_MESSAGES_CONFIG_H
