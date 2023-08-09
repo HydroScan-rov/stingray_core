@@ -113,10 +113,10 @@ bool UartDriver::receiveData() {
     try {
         auto bytes_available = port.available();
         if (bytes_available == 0) {
-            RCLCPP_ERROR(this->get_logger(), "Port not avaliable. Error: %s", bytes_available);
+            RCLCPP_ERROR(this->get_logger(), "Port not avaliable. Bytes: %ld", bytes_available);
             return false;
         } else {
-            RCLCPP_INFO(this->get_logger(), "Port avaliable. Bytes: %d", bytes_available);
+            RCLCPP_INFO(this->get_logger(), "Port avaliable. Bytes: %ld", bytes_available);
         }
         std::vector<uint8_t> answer;
         port.read(answer, bytes_available);
