@@ -90,7 +90,6 @@ ResponseNormalMessage::ResponseNormalMessage()
     {
         voltage_battery_cell[i] = 0;
     }
-    voltage_battery = 0;
 
     checksum = 0;
 }
@@ -98,6 +97,7 @@ ResponseNormalMessage::ResponseNormalMessage()
 // form byte-vector (raspberry_cm4 to pult)
 void ResponseNormalMessage::pack(std::vector<uint8_t> &container)
 {
+    pushToVector(container, type);
     pushToVector(container, depth);
     pushToVector(container, roll);
     pushToVector(container, pitch);
@@ -118,7 +118,6 @@ void ResponseNormalMessage::pack(std::vector<uint8_t> &container)
     {
         pushToVector(container, voltage_battery_cell[i]);
     }
-    pushToVector(container, voltage_battery);
 
     uint16_t checksum = getChecksum16b(container);
     pushToVector(container, checksum); // do i need to revert bytes here?

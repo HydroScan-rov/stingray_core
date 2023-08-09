@@ -10,8 +10,8 @@ struct RequestDirectMessage : public AbstractMessage
     const static uint8_t length = 24; // 1(type) + 21(message) + 2(checksum) = 24 dyte
 
     const static uint8_t type = 0xAA;
-    uint8_t connection_status;
 
+    uint8_t connection_status;
     uint8_t flags;        // [0]thrusters_on, [1]reset_imu, [2]reset_depth, [3]rgb_light_on, [4]lower_light_on,
     uint8_t id;           // 0..7
     uint8_t adress;       // 0..7
@@ -40,13 +40,14 @@ struct ResponseDirectMessage : public AbstractMessage
 {
     ResponseDirectMessage();
 
-    const static uint8_t length = 59; // 57(message) + 2(checksum) = 59 dyte
+    const static uint8_t length = 30; // 1(type) + 27(message) + 2(checksum) = 59 dyte
 
+    const static uint8_t type = 0xAA;
+    
     uint8_t connection_status;
-    float_t current_logic_electronics; // from rpi
-    float_t current_vma[8];
-    float_t voltage_battery_cell[4];
-    float_t voltage_battery; // 56
+    uint16_t current_logic_electronics; // from rpi
+    uint16_t current_vma[8];
+    uint16_t voltage_battery_cell[4];
 
     uint16_t checksum;
 

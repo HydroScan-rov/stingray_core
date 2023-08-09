@@ -105,6 +105,8 @@ void UartDriver::portInitialize()
 bool UartDriver::sendData()
 {
     size_t toWrite = sizeof(uint8_t) * toStmVector.size();
+    RCLCPP_INFO(this->get_logger(), "Size: %d", int(toWrite));
+
     try
     {
         port.flush();
@@ -121,7 +123,10 @@ bool UartDriver::sendData()
 bool UartDriver::receiveData()
 {
     if (port.available() < StmResponseMessage::length)
+    {
+        RCLCPP_ERROR(this->get_logger(), "Port not avaliable. Error: %s", port.available());
         return false;
+    }
     std::vector<uint8_t> answer;
     port.read(answer, StmResponseMessage::length);
     fromStmMessage.data.clear();
@@ -138,11 +143,12 @@ bool UartDriver::receiveData()
  */
 void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray &msg)
 {
-            RCLCPP_INFO(this->get_logger(), "toStmMessage_callback");
+    RCLCPP_INFO(this->get_logger(), "toStmMessage_callback");
 
     toStmVector.clear();
-    for (auto byte : msg.data)
-        toStmVector.push_back(byte);
+    for (int i = 0; i < StmRequestMessage::length; i++)
+        toStmVector.push_back(msg.data[i]);
+
     try
     {
         if (!port.isOpen())
@@ -162,11 +168,21 @@ void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray &msg
         RCLCPP_ERROR(this->get_logger(), "Unable to send message to STM32");
         return;
     }
-    if (receiveData())
-        fromStmMessage_pub->publish(fromStmMessage);
     else
+        RCLCPP_ERROR(this->get_logger(), "Successfully sent to STM32");
+    try
     {
-        RCLCPP_ERROR(this->get_logger(), "Unable to receive message from STM32");
+        if (receiveData())
+            fromStmMessage_pub->publish(fromStmMessage);
+        else
+        {
+            RCLCPP_ERROR(this->get_logger(), "Unable to receive message from STM32");
+            return;
+        }
+    }
+    catch (serial::IOException &ex)
+    {
+        RCLCPP_ERROR(this->get_logger(), "Serial exception when trying to receive data. Error: %s", ex.what());
         return;
     }
 }

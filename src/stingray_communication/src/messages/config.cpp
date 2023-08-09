@@ -56,7 +56,7 @@ RequestConfigMessage::RequestConfigMessage() : AbstractMessage() {
 
 // stm -> cm4 -> pult
 ResponseConfigMessage::ResponseConfigMessage() : AbstractMessage() {
-    reseived_connection_status = 0;
+    connection_status = 0;
     depth = 0;
     roll = 0;
     pitch = 0;
@@ -88,7 +88,6 @@ ResponseConfigMessage::ResponseConfigMessage() : AbstractMessage() {
     for (int i = 0; i < 4; i++) {
         voltage_battery_cell[i] = 0;
     }
-    voltage_battery = 0;
 
     checksum = 0;
 }
@@ -155,7 +154,8 @@ bool RequestConfigMessage::parse(std::vector<uint8_t>& input) {
 
 // form byte-vector (cm4 -> pult)
 void ResponseConfigMessage::pack(std::vector<uint8_t>& container) {
-    pushToVector(container, reseived_connection_status);
+    pushToVector(container, type);
+    pushToVector(container, connection_status);
     pushToVector(container, depth);
     pushToVector(container, roll);
     pushToVector(container, pitch);
@@ -185,7 +185,6 @@ void ResponseConfigMessage::pack(std::vector<uint8_t>& container) {
         pushToVector(container, current_vma[i]);
     for (int i = 0; i < 4; i++)
         pushToVector(container, voltage_battery_cell[i]);
-    pushToVector(container, voltage_battery);
 
     uint16_t checksum = getChecksum16b(container);
     pushToVector(container, checksum); // do i need to revert bytes here?
