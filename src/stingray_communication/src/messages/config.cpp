@@ -38,6 +38,7 @@ RequestConfigMessage::RequestConfigMessage() : AbstractMessage() {
     reset_depth = 0;
     rgb_light_on = 0;
     lower_light_on = 0;
+    save_constants = 0;
 
     stab_march = 0;
     stab_lag = 0;
@@ -132,6 +133,7 @@ bool RequestConfigMessage::parse(std::vector<uint8_t>& input) {
     reset_depth = pickBit(flags, 2);
     rgb_light_on = pickBit(flags, 3);
     lower_light_on = pickBit(flags, 4);
+    save_constants = pickBit(flags, 5);
 
     stab_march = pickBit(stab_flags, 0);
     stab_lag = pickBit(stab_flags, 1);
