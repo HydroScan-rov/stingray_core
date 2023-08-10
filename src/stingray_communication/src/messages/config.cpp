@@ -5,7 +5,7 @@ RequestConfigMessage::RequestConfigMessage() : AbstractMessage() {
     connection_status = 0;
     flags = 0;
     stab_flags = 0;
-    current_circuit = 0;
+    current_loop = 0;
 
     march = 0;
     lag = 0;
@@ -122,7 +122,7 @@ bool RequestConfigMessage::parse(std::vector<uint8_t>& input) {
     popFromVector(input, lag);
     popFromVector(input, march);
 
-    popFromVector(input, current_circuit);
+    popFromVector(input, current_loop);
     popFromVector(input, stab_flags);
     popFromVector(input, flags);
     popFromVector(input, connection_status);
@@ -140,12 +140,12 @@ bool RequestConfigMessage::parse(std::vector<uint8_t>& input) {
     stab_pitch = pickBit(stab_flags, 4);
     stab_yaw = pickBit(stab_flags, 5);
 
-    current_march = pickBit(current_circuit, 0);
-    current_lag = pickBit(current_circuit, 1);
-    current_depth = pickBit(current_circuit, 2);
-    current_roll = pickBit(current_circuit, 3);
-    current_pitch = pickBit(current_circuit, 4);
-    current_yaw = pickBit(current_circuit, 5);
+    current_march = pickBit(current_loop, 0);
+    current_lag = pickBit(current_loop, 1);
+    current_depth = pickBit(current_loop, 2);
+    current_roll = pickBit(current_loop, 3);
+    current_pitch = pickBit(current_loop, 4);
+    current_yaw = pickBit(current_loop, 5);
 
     return true;
 }
