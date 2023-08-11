@@ -55,7 +55,9 @@ struct ResponseNormalMessage : public AbstractMessage
 {
     ResponseNormalMessage();
 
-    const static uint8_t length = 91; // 89(message) + 2(checksum) = 91 dyte
+    const static uint8_t length = 62; // 1(type) + 52(message) + 2(checksum) = 62 dyte
+
+    const static uint8_t type = 0xA5;
 
     uint8_t connection_status;
     float_t depth;
@@ -66,10 +68,9 @@ struct ResponseNormalMessage : public AbstractMessage
     float_t distance_r;
     float_t speed_down; // speed signal from jetson
     float_t speed_right;
-    float_t current_logic_electronics; // from jetson + raspberry dc-dc
-    float_t current_vma[8];
-    float_t voltage_battery_cell[4];
-    float_t voltage_battery; // 56
+    uint16_t current_logic_electronics; // from jetson + raspberry dc-dc
+    uint16_t current_vma[8];
+    uint16_t voltage_battery_cell[4];
 
     uint16_t checksum;
 

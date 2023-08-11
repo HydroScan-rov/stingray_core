@@ -7,14 +7,14 @@
 struct RequestConfigMessage : public AbstractMessage
 {
     RequestConfigMessage();
-    const static uint8_t lenght = 95; // 1(type) + 92(message) + 2(checksum) = 95 dyte
+    const static uint8_t length = 95; // 1(type) + 92(message) + 2(checksum) = 95 dyte
 
     const static uint8_t type = 0x55;
-
     uint8_t connection_status;
-    uint8_t flags; // [0]thrusters_on, [1]reset_imu, [2]reset_depth, [3]rgb_light_on, [4]lower_light_on,
+
+    uint8_t flags; // [0]thrusters_on, [1]reset_imu, [2]reset_depth, [3]rgb_light_on, [4]lower_light_on, [5]save_constants
     uint8_t stab_flags; // stab [0]march, [1]lag, [2]depth, [3]roll, [4]pitch, [5]yaw, [6]thrusters_on, [6]reset_imu
-    uint8_t current_circuit; // current contour: [0]march, [1]lag, [2]depth, [3]roll, [4]pitch, [5]yaw
+    uint8_t current_loop; // current contour: [0]march, [1]lag, [2]depth, [3]roll, [4]pitch, [5]yaw
 
     float_t march;
     float_t lag;
@@ -47,6 +47,7 @@ struct RequestConfigMessage : public AbstractMessage
     bool reset_depth;
     bool rgb_light_on;
     bool lower_light_on;
+    bool save_constants;
 
     bool stab_march;
     bool stab_lag;
@@ -70,9 +71,10 @@ struct ResponseConfigMessage : public AbstractMessage
 {
     ResponseConfigMessage();
 
-    const static uint8_t lenght = 147; // 145(message) + 2(checksum) = 139 dyte
+    const static uint8_t length = 118; // 1(type) + 115(message) + 2(checksum) = 118 dyte
 
-    uint8_t reseived_connection_status;
+    const static uint8_t type = 0x55;
+    uint8_t connection_status;
 
     float_t depth;
     float_t roll;
@@ -98,10 +100,9 @@ struct ResponseConfigMessage : public AbstractMessage
     float_t out_pre_saturation;
     float_t out;
 
-    float_t current_logic_electronics; // from jetson + raspberry dc-dc
-    float_t current_vma[8];
-    float_t voltage_battery_cell[4];
-    float_t voltage_battery; // 56
+    uint16_t current_logic_electronics; // from jetson + raspberry dc-dc
+    uint16_t current_vma[8];
+    uint16_t voltage_battery_cell[4]; // [0]: 1st sell; [1]: 1+2; [2]: 1+2+3; [3]: 1+2+3+4 (full battery)
 
     uint16_t checksum;
 

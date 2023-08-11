@@ -22,12 +22,12 @@ using boost::asio::ip::udp;
 using std::placeholders::_1;
 
 class GuiBridgeSender : public rclcpp::Node {
-   public:
-    GuiBridgeSender(boost::asio::io_service &io_service);
+public:
+    GuiBridgeSender(boost::asio::io_service& io_service);
     ~GuiBridgeSender();
 
-   private:
-    void from_driver_callback(const std_msgs::msg::UInt8MultiArray &msg);
+private:
+    void from_bridge_callback(const std_msgs::msg::UInt8MultiArray& msg);
 
     // get json config
     json ros_config;
@@ -37,19 +37,19 @@ class GuiBridgeSender : public rclcpp::Node {
     rclcpp::Subscription<std_msgs::msg::UInt8MultiArray>::SharedPtr responseMessageSubscriber;
 
     // udp connection
-    boost::asio::io_service &_io_service;
+    boost::asio::io_service& _io_service;
     udp::endpoint _send_endpoint;
     udp::socket _send_socket;
 };
 
 class GuiBridgeReceiver : public rclcpp::Node {
-   public:
-    GuiBridgeReceiver(boost::asio::io_service &io_service);
+public:
+    GuiBridgeReceiver(boost::asio::io_service& io_service);
     ~GuiBridgeReceiver();
     void try_receive();
 
-   private:
-    void gui_request_callback(const boost::system::error_code &error, size_t bytes_transferred);
+private:
+    void gui_request_callback(const boost::system::error_code& error, size_t bytes_transferred);
 
     // ROS publishers
     rclcpp::Publisher<std_msgs::msg::UInt8MultiArray>::SharedPtr requestMessagePublisher;
@@ -62,7 +62,7 @@ class GuiBridgeReceiver : public rclcpp::Node {
     json com_config;
 
     // udp connection
-    boost::asio::io_service &_io_service;
+    boost::asio::io_service& _io_service;
     udp::endpoint _receive_endpoint;
     udp::socket _receive_socket;
     boost::array<uint8_t, 1024> request_buffer;

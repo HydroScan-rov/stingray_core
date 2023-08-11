@@ -42,9 +42,9 @@ void StmRequestMessage::pack(std::vector<uint8_t>& container) {
 StmResponseMessage::StmResponseMessage() {
     connection_status = 0;
     current_logic_electronics = 0;
-    for (int i = 0; i < 4; i++)
-        current_vma[i] = 0;
     for (int i = 0; i < 8; i++)
+        current_vma[i] = 0;
+    for (int i = 0; i < 4; i++)
         voltage_battery_cell[i] = 0;
 
     checksum = 0;
@@ -57,10 +57,10 @@ bool StmResponseMessage::parse(std::vector<uint8_t>& input) {
     uint16_t checksum_calc = getChecksum16b(input);
     if (checksum_calc != checksum)
         return false;
-        
-    for (int i = 0; i < 8; i++)
-        popFromVector(input, voltage_battery_cell[8 - i]);
+
     for (int i = 0; i < 4; i++)
+        popFromVector(input, voltage_battery_cell[8 - i]);
+    for (int i = 0; i < 8; i++)
         popFromVector(input, current_vma[4 - i]);
     popFromVector(input, current_logic_electronics);
     popFromVector(input, connection_status);

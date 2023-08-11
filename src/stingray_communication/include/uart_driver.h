@@ -16,10 +16,10 @@ using json = nlohmann::json;
 using std::placeholders::_1;
 
 class UartDriver : public rclcpp::Node {
-   public:
+public:
     UartDriver();
 
-   private:
+private:
     void toStmMessage_callback(const std_msgs::msg::UInt8MultiArray& msg);
     void portInitialize();
     bool sendData();
