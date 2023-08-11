@@ -53,7 +53,7 @@ void GuiBridgeReceiver::gui_request_callback(const boost::system::error_code& er
         return;
     }
     std::string str(request_buffer.begin(), request_buffer.end());
-    RCLCPP_INFO(this->get_logger(), "Received from gui %u", str.c_str());
+    // RCLCPP_INFO(this->get_logger(), "Received from gui %u", str.c_str());
 
     requestMessageContainer.data.clear();
     for (auto msg : request_buffer)

@@ -97,7 +97,7 @@ void UartDriver::portInitialize() {
 
 bool UartDriver::sendData() {
     size_t toWrite = sizeof(uint8_t) * toStmVector.size();
-    RCLCPP_INFO(this->get_logger(), "Size: %d", int(toWrite));
+    // RCLCPP_INFO(this->get_logger(), "Size: %d", int(toWrite));
 
     try {
         port.flush();
@@ -117,7 +117,7 @@ bool UartDriver::receiveData() {
             RCLCPP_ERROR(this->get_logger(), "Port not avaliable. Bytes: %ld", bytes_available);
             return false;
         } else {
-            RCLCPP_INFO(this->get_logger(), "Port avaliable. Bytes: %ld", bytes_available);
+            // RCLCPP_INFO(this->get_logger(), "Port avaliable. Bytes: %ld", bytes_available);
         }
         std::vector<uint8_t> answer;
         port.read(answer, bytes_available);
