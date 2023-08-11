@@ -36,7 +36,7 @@ void StmRequestMessage::pack(std::vector<uint8_t>& container) {
     pushToVector(container, b_rgb_light);
 
     uint16_t checksum = getChecksum16b(container);
-    pushToVector(container, checksum); // do i need to revert bytes here?
+    pushToVector(container, checksum);
 }
 
 StmResponseMessage::StmResponseMessage() {

@@ -22,7 +22,7 @@ RequestNormalMessage::RequestNormalMessage() : AbstractMessage() {
 // pull message from byte-vector (pult to raspberry_cm4)
 bool RequestNormalMessage::parse(std::vector<uint8_t>& input) {
     // get checksum
-    popFromVector(input, checksum, true);
+    popFromVector(input, checksum);
     uint16_t checksum_calc = getChecksum16b(input);
     if (checksum_calc != checksum) {
         return false;
@@ -108,5 +108,5 @@ void ResponseNormalMessage::pack(std::vector<uint8_t>& container) {
         pushToVector(container, voltage_battery_cell[i]);
 
     uint16_t checksum = getChecksum16b(container);
-    pushToVector(container, checksum); // do i need to revert bytes here?
+    pushToVector(container, checksum);
 };

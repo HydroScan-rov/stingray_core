@@ -187,5 +187,5 @@ void ResponseConfigMessage::pack(std::vector<uint8_t>& container) {
         pushToVector(container, voltage_battery_cell[i]);
 
     uint16_t checksum = getChecksum16b(container);
-    pushToVector(container, checksum); // do i need to revert bytes here?
+    pushToVector(container, checksum);
 }
