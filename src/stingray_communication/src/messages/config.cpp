@@ -93,7 +93,7 @@ ResponseConfigMessage::ResponseConfigMessage() : AbstractMessage() {
 
 // pull message from byte-vector (pult -> cm4)
 bool RequestConfigMessage::parse(std::vector<uint8_t>& input) {
-    popFromVector(input, checksum, true);
+    popFromVector(input, checksum);
     uint16_t checksum_calc = getChecksum16b(input);
     if (checksum_calc != checksum) {
         return false;
