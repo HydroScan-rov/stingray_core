@@ -151,11 +151,13 @@ void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray &msg
         RCLCPP_ERROR(this->get_logger(), "Serial exception when trying to open. Error: %s", ex.what());
         return;
     }
+    
     if (!sendData()) {
         RCLCPP_ERROR(this->get_logger(), "Unable to send message to STM32");
         return;
     } else
         RCLCPP_INFO(this->get_logger(), "Successfully sent to STM32");
+
     if (receiveData())
         fromStmMessage_pub->publish(fromStmMessage);
     else {
