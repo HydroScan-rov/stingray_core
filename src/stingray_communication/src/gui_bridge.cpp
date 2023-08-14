@@ -53,7 +53,7 @@ void GuiBridgeReceiver::gui_request_callback(const boost::system::error_code& er
         return;
     }
     std::string str(request_buffer.begin(), request_buffer.end());
-    RCLCPP_INFO(this->get_logger(), "Received from gui %s", str.c_str());
+    // RCLCPP_INFO(this->get_logger(), "Received from gui %u", str.c_str());
 
     requestMessageContainer.data.clear();
     for (auto msg : request_buffer)
@@ -65,7 +65,7 @@ void GuiBridgeReceiver::gui_request_callback(const boost::system::error_code& er
 }
 
 void GuiBridgeReceiver::try_receive() {
-    RCLCPP_INFO(this->get_logger(), "Trying to receive from gui...");
+    // RCLCPP_INFO(this->get_logger(), "Trying to receive from gui...");
     // std::this_thread::sleep_for(std::chrono::milliseconds(500));
     _receive_socket.async_receive_from(
         boost::asio::buffer(request_buffer), _receive_endpoint,

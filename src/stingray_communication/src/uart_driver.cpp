@@ -97,13 +97,14 @@ void UartDriver::portInitialize() {
 
 bool UartDriver::sendData() {
     size_t toWrite = sizeof(uint8_t) * toStmVector.size();
-    RCLCPP_INFO(this->get_logger(), "Size: %d", int(toWrite));
+    // RCLCPP_INFO(this->get_logger(), "Size: %d", int(toWrite));
 
     try {
         port.flush();
         size_t written = port.write(toStmVector);
         return written == toWrite;
-    } catch (serial::IOException &ex) {
+    }
+    catch (serial::IOException& ex) {
         RCLCPP_ERROR(this->get_logger(), "Serial exception, when trying to flush and send. Error: %s", ex.what());
         return false;
     }
@@ -116,17 +117,20 @@ bool UartDriver::receiveData() {
             RCLCPP_ERROR(this->get_logger(), "Port not avaliable. Bytes: %ld", bytes_available);
             return false;
         } else {
-            RCLCPP_INFO(this->get_logger(), "Port avaliable. Bytes: %ld", bytes_available);
+            // RCLCPP_INFO(this->get_logger(), "Port avaliable. Bytes: %ld", bytes_available);
         }
         std::vector<uint8_t> answer;
         port.read(answer, bytes_available);
         fromStmMessage.data.clear();
-        for (int i = 0; i < StmResponseMessage::length; i++)
+        for (int i = 0; i < StmResponseMessage::length; i++) {
+            // RCLCPP_INFO(this->get_logger(), "RECEIVED FROM STM byte %i = %u", i, answer[i]);
             fromStmMessage.data.push_back(answer[i]);
+        }
         RCLCPP_INFO(this->get_logger(), "RECEIVED FROM STM");
 
         return true;
-    } catch (serial::IOException &ex) {
+    }
+    catch (serial::IOException& ex) {
         RCLCPP_ERROR(this->get_logger(), "Serial exception when trying to receive data. Error: %s", ex.what());
         return false;
     }
@@ -136,7 +140,7 @@ bool UartDriver::receiveData() {
  *
  * @param[in]  &input String to parse.
  */
-void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray &msg) {
+void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray& msg) {
     toStmVector.clear();
     for (int i = 0; i < StmRequestMessage::length; i++)
         toStmVector.push_back(msg.data[i]);
@@ -147,15 +151,18 @@ void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray &msg
             if (!port.isOpen())
                 RCLCPP_ERROR(this->get_logger(), "Unable to open UART port");
         }
-    } catch (serial::IOException &ex) {
+    }
+    catch (serial::IOException& ex) {
         RCLCPP_ERROR(this->get_logger(), "Serial exception when trying to open. Error: %s", ex.what());
         return;
     }
+
     if (!sendData()) {
         RCLCPP_ERROR(this->get_logger(), "Unable to send message to STM32");
         return;
     } else
         RCLCPP_INFO(this->get_logger(), "Successfully sent to STM32");
+
     if (receiveData())
         fromStmMessage_pub->publish(fromStmMessage);
     else {
@@ -164,7 +171,7 @@ void UartDriver::toStmMessage_callback(const std_msgs::msg::UInt8MultiArray &msg
     }
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     rclcpp::init(argc, argv);
     std::shared_ptr<rclcpp::Node> node = std::make_shared<UartDriver>();
     rclcpp::spin(node);
