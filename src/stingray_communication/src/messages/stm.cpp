@@ -3,6 +3,7 @@
 StmRequestMessage::StmRequestMessage() : AbstractMessage() {
     connection_status = 0;
     flags = 0;
+    empty_byte = 0;
     for (int i = 0; i < 8; i++)
         velocity[i] = 0;
     tilt = 0;
@@ -27,6 +28,7 @@ void StmRequestMessage::pack(std::vector<uint8_t>& container) {
     pushToVector(container, type);
     pushToVector(container, connection_status);
     pushToVector(container, flags);
+    pushToVector(container, empty_byte);
     for (int i = 0; i < 8; i++)
         pushToVector(container, velocity[i], true);
     pushToVector(container, tilt, true);
