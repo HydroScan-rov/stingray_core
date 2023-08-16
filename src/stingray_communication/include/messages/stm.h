@@ -9,11 +9,12 @@ struct StmRequestMessage : public AbstractMessage
     StmRequestMessage();
     void setFlags(bool thrusters_on, bool rgb_light_on, bool lower_light_on);
 
-    const static uint8_t length = 27; // 1(type) + 24(message) + 2(checksum) = 27 dyte
+    const static uint8_t length = 28; // 1(type) + 25(message) + 2(checksum) = 28 dyte
 
     const static uint8_t type = 0xA5;
     uint8_t connection_status;
     uint8_t flags;             // [0]thrusters_on, [1]rgb_light_on, [2]lower_light_on,
+    uint8_t empty_byte;
     uint16_t velocity[8];      // pwm to thrusters 8 pcs
     uint16_t tilt;             // 1000-2000
     uint8_t power_lower_light; // 0-255
