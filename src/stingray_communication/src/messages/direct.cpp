@@ -5,8 +5,8 @@ RequestDirectMessage::RequestDirectMessage() : AbstractMessage() {
     connection_status = 0;
     flags = 0;
     for (int i = 0; i < 8; i++) {
-        place[i] = 0;
-        target_forse[i] = 0;
+        id[i] = 0;
+        target_force[i] = 0;
         k_forward[i] = 0;
         k_backward[i] = 0;
         s_forward[i] = 0;
@@ -51,9 +51,9 @@ bool RequestDirectMessage::parse(std::vector<uint8_t>& input) {
     for (int i = 7; i >= 0; i++)
         popFromVector(input, k_forward[i]);
     for (int i = 7; i >= 0; i++)
-        popFromVector(input, target_forse[i]);
+        popFromVector(input, target_force[i]);
     for (int i = 7; i >= 0; i++)
-        popFromVector(input, place[i]);
+        popFromVector(input, id[i]);
 
     popFromVector(input, reverse);
     popFromVector(input, flags);
