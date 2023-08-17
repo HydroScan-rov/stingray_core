@@ -30,7 +30,7 @@ void StmRequestMessage::pack(std::vector<uint8_t>& container) {
     pushToVector(container, flags);
     pushToVector(container, empty_byte);
     for (int i = 0; i < 8; i++)
-        pushToVector(container, velocity[i], true);
+        pushToVector(container, velocity[i], false);
     pushToVector(container, tilt, true);
     pushToVector(container, power_lower_light);
     pushToVector(container, r_rgb_light);
