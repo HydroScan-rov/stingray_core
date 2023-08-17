@@ -4,14 +4,15 @@
 RequestDirectMessage::RequestDirectMessage() : AbstractMessage() {
     connection_status = 0;
     flags = 0;
-    id = 0;
-    adress = 0;
-    target_forse = 0;
+    for (int i = 0; i < 8; i++) {
+        place[i] = 0;
+        target_forse[i] = 0;
+        k_forward[i] = 0;
+        k_backward[i] = 0;
+        s_forward[i] = 0;
+        s_backward[i] = 0;
+    }
     reverse = 0;
-    k_forward = 0;
-    k_backward = 0;
-    s_forward = 0;
-    s_backward = 0;
     checksum = 0;
 
     thrusters_on = 0;
@@ -19,6 +20,7 @@ RequestDirectMessage::RequestDirectMessage() : AbstractMessage() {
     reset_depth = 0;
     rgb_light_on = 0;
     lower_light_on = 0;
+    save_constants = 0;
 }
 
 // stm -> cm4 -> pult
@@ -39,14 +41,21 @@ bool RequestDirectMessage::parse(std::vector<uint8_t>& input) {
     if (checksum_calc != checksum) {
         return false;
     }
-    popFromVector(input, s_backward);
-    popFromVector(input, s_forward);
-    popFromVector(input, k_backward);
-    popFromVector(input, k_forward);
+
+    for (int i = 7; i >= 0; i++)
+        popFromVector(input, s_backward[i]);
+    for (int i = 7; i >= 0; i++)
+        popFromVector(input, s_forward[i]);
+    for (int i = 7; i >= 0; i++)
+        popFromVector(input, k_backward[i]);
+    for (int i = 7; i >= 0; i++)
+        popFromVector(input, k_forward[i]);
+    for (int i = 7; i >= 0; i++)
+        popFromVector(input, target_forse[i]);
+    for (int i = 7; i >= 0; i++)
+        popFromVector(input, place[i]);
+
     popFromVector(input, reverse);
-    popFromVector(input, target_forse);
-    popFromVector(input, adress);
-    popFromVector(input, id);
     popFromVector(input, flags);
     popFromVector(input, connection_status);
 
@@ -55,6 +64,7 @@ bool RequestDirectMessage::parse(std::vector<uint8_t>& input) {
     reset_depth = pickBit(flags, 2);
     rgb_light_on = pickBit(flags, 3);
     lower_light_on = pickBit(flags, 4);
+    save_constants = pickBit(flags, 5);
 
     return true;
 }
