@@ -42,17 +42,17 @@ bool RequestDirectMessage::parse(std::vector<uint8_t>& input) {
         return false;
     }
 
-    for (int i = 7; i >= 0; i++)
+    for (int i = 7; i >= 0; i--)
         popFromVector(input, dPWM_backward[i]);
-    for (int i = 7; i >= 0; i++)
+    for (int i = 7; i >= 0; i--)
         popFromVector(input, dPWM_forward[i]);
-    for (int i = 7; i >= 0; i++)
+    for (int i = 7; i >= 0; i--)
         popFromVector(input, k_backward[i]);
-    for (int i = 7; i >= 0; i++)
+    for (int i = 7; i >= 0; i--)
         popFromVector(input, k_forward[i]);
-    for (int i = 7; i >= 0; i++)
+    for (int i = 7; i >= 0; i--)
         popFromVector(input, target_force[i]);
-    for (int i = 7; i >= 0; i++)
+    for (int i = 7; i >= 0; i--)
         popFromVector(input, id[i]);
 
     popFromVector(input, reverse);
@@ -65,6 +65,10 @@ bool RequestDirectMessage::parse(std::vector<uint8_t>& input) {
     rgb_light_on = pickBit(flags, 3);
     lower_light_on = pickBit(flags, 4);
     save_constants = pickBit(flags, 5);
+
+    for (int i = 0; i < 8; i++) {
+        enable_reverse[i] = pickBit(reverse, i);
+    }
 
     return true;
 }

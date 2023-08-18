@@ -30,6 +30,8 @@ struct RequestDirectMessage : public AbstractMessage
     bool lower_light_on;
     bool save_constants;
 
+    bool enable_reverse[8];
+
     bool parse(std::vector<uint8_t>& input) override; // pult to raspberry_cm4
 };
 
