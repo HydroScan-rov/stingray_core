@@ -31,10 +31,6 @@ RequestConfigMessage::RequestConfigMessage() : AbstractMessage() {
     out_max = 0;
     out_min = 0;
 
-    inside_pressure = 0;
-    inside_temperature = 0;
-    outside_temperature = 0;
-
     checksum = 0;
 
     thrusters_on = 0;
@@ -91,6 +87,10 @@ ResponseConfigMessage::ResponseConfigMessage() : AbstractMessage() {
         current_vma[i] = 0;
     for (int i = 0; i < 4; i++)
         voltage_battery_cell[i] = 0;
+
+    inside_pressure = 0;
+    inside_temperature = 0;
+    outside_temperature = 0;
 
     checksum = 0;
 }
