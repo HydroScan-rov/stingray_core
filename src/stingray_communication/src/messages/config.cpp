@@ -31,6 +31,10 @@ RequestConfigMessage::RequestConfigMessage() : AbstractMessage() {
     out_max = 0;
     out_min = 0;
 
+    inside_pressure = 0;
+    inside_temperature = 0;
+    outside_temperature = 0;
+
     checksum = 0;
 
     thrusters_on = 0;
@@ -185,6 +189,10 @@ void ResponseConfigMessage::pack(std::vector<uint8_t>& container) {
         pushToVector(container, current_vma[i]);
     for (int i = 0; i < 4; i++)
         pushToVector(container, voltage_battery_cell[i]);
+
+    pushToVector(container, inside_pressure);
+    pushToVector(container, inside_temperature);
+    pushToVector(container, outside_temperature);
 
     uint16_t checksum = getChecksum16b(container);
     pushToVector(container, checksum);

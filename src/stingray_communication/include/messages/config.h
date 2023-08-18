@@ -71,7 +71,7 @@ struct ResponseConfigMessage : public AbstractMessage
 {
     ResponseConfigMessage();
 
-    const static uint8_t length = 118; // 1(type) + 115(message) + 2(checksum) = 118 dyte
+    const static uint8_t length = 130; // 1(type) + 127(message) + 2(checksum) = 130 dyte
 
     const static uint8_t type = 0x55;
     uint8_t connection_status;
@@ -104,6 +104,10 @@ struct ResponseConfigMessage : public AbstractMessage
     uint16_t current_vma[8];
     uint16_t voltage_battery_cell[4]; // [0]: 1st sell; [1]: 1+2; [2]: 1+2+3; [3]: 1+2+3+4 (full battery)
 
+    float_t inside_pressure;
+    float_t inside_temperature;
+    float_t outside_temperature;
+    
     uint16_t checksum;
 
     void pack(std::vector<uint8_t>& container) override; // cm4 -> pult

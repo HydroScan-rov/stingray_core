@@ -20,7 +20,7 @@ RequestNormalMessage::RequestNormalMessage() : AbstractMessage() {
 }
 
 // pull message from byte-vector (pult to raspberry_cm4)
-bool RequestNormalMessage::parse(std::vector<uint8_t>& input) {
+bool RequestNormalMessage::parse(std::vector<uint8_t> &input) {
     // get checksum
     popFromVector(input, checksum);
     uint16_t checksum_calc = getChecksum16b(input);
@@ -83,11 +83,15 @@ ResponseNormalMessage::ResponseNormalMessage() {
     for (int i = 0; i < 4; i++)
         voltage_battery_cell[i] = 0;
 
+    inside_pressure = 0;
+    inside_temperature = 0;
+    outside_temperature = 0;
+
     checksum = 0;
 }
 
 // form byte-vector (raspberry_cm4 to pult)
-void ResponseNormalMessage::pack(std::vector<uint8_t>& container) {
+void ResponseNormalMessage::pack(std::vector<uint8_t> &container) {
     pushToVector(container, type);
     pushToVector(container, connection_status);
     pushToVector(container, depth);
@@ -106,6 +110,10 @@ void ResponseNormalMessage::pack(std::vector<uint8_t>& container) {
         pushToVector(container, current_vma[i]);
     for (int i = 0; i < 4; i++)
         pushToVector(container, voltage_battery_cell[i]);
+
+    pushToVector(container, inside_pressure);
+    pushToVector(container, inside_temperature);
+    pushToVector(container, outside_temperature);
 
     uint16_t checksum = getChecksum16b(container);
     pushToVector(container, checksum);
