@@ -9,8 +9,8 @@ RequestDirectMessage::RequestDirectMessage() : AbstractMessage() {
         target_force[i] = 0;
         k_forward[i] = 0;
         k_backward[i] = 0;
-        s_forward[i] = 0;
-        s_backward[i] = 0;
+        dPWM_forward[i] = 0;
+        dPWM_backward[i] = 0;
     }
     reverse = 0;
     checksum = 0;
@@ -43,9 +43,9 @@ bool RequestDirectMessage::parse(std::vector<uint8_t>& input) {
     }
 
     for (int i = 7; i >= 0; i++)
-        popFromVector(input, s_backward[i]);
+        popFromVector(input, dPWM_backward[i]);
     for (int i = 7; i >= 0; i++)
-        popFromVector(input, s_forward[i]);
+        popFromVector(input, dPWM_forward[i]);
     for (int i = 7; i >= 0; i++)
         popFromVector(input, k_backward[i]);
     for (int i = 7; i >= 0; i++)
