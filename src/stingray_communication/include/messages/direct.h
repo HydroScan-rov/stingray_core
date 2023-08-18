@@ -8,27 +8,27 @@ struct RequestDirectMessage : public AbstractMessage
 {
     RequestDirectMessage();
 
-    const static uint8_t length = 24; // 1(type) + 21(message) + 2(checksum) = 24 dyte
+    const static uint8_t length = 142; // 1(type) + 139(message) + 2(checksum) = 142 dyte
 
     const static uint8_t type = 0xAA;
     uint8_t connection_status;
-    uint8_t flags; // [0]thrusters_on, [1]reset_imu, [2]reset_depth, [3]rgb_light_on, [4]lower_light_on,
-    uint8_t id; // 0..7
-    uint8_t adress; // 0..7
-    float_t target_forse; // newton
-    uint8_t reverse;
-    float_t k_forward;
-    float_t k_backward;
-    int16_t s_forward; // max PWM
-    int16_t s_backward; // min PWM
+    uint8_t flags; // [0]thrusters_on, [1]reset_imu, [2]reset_depth, [3]rgb_light_on, [4]lower_light_on, [5]save_constants
+    uint8_t reverse; // [0]reverse of 0 thruster, [1]reverse of 1st thruster
+    uint8_t id[8]; // [0]id of horizontal-front-left, [1]id of horizontal-front-right....
+    float_t target_force[8]; // newton
+    float_t k_forward[8];
+    float_t k_backward[8];
+    uint16_t dPWM_forward[8]; // 0-500
+    uint16_t dPWM_backward[8]; // 0-500
 
-    uint16_t checksum; // 1(type) + 20(message) + 2(checksum) = 23 dyte
+    uint16_t checksum;
 
     bool thrusters_on;
     bool reset_imu;
     bool reset_depth;
     bool rgb_light_on;
     bool lower_light_on;
+    bool save_constants;
 
     bool parse(std::vector<uint8_t>& input) override; // pult to raspberry_cm4
 };

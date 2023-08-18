@@ -4,8 +4,7 @@
 #include "messages/common.h"
 
 // pult -> cm4
-struct RequestNormalMessage : public AbstractMessage
-{
+struct RequestNormalMessage : public AbstractMessage {
     RequestNormalMessage();
 
     const static uint8_t length = 37; // 1(type) + 34(message) + 2(checksum) = 37 dyte
@@ -47,15 +46,14 @@ struct RequestNormalMessage : public AbstractMessage
     bool control_auto;
     bool control_maneuverable;
 
-    bool parse(std::vector<uint8_t>& input) override; // pult to raspberry_cm4
+    bool parse(std::vector<uint8_t> &input) override; // pult to raspberry_cm4
 };
 
 // cm4 -> pult
-struct ResponseNormalMessage : public AbstractMessage
-{
+struct ResponseNormalMessage : public AbstractMessage {
     ResponseNormalMessage();
 
-    const static uint8_t length = 62; // 1(type) + 52(message) + 2(checksum) = 62 dyte
+    const static uint8_t length = 74; // 1(type) + 71(message) + 2(checksum) = 74 dyte
 
     const static uint8_t type = 0xA5;
 
@@ -72,9 +70,13 @@ struct ResponseNormalMessage : public AbstractMessage
     uint16_t current_vma[8];
     uint16_t voltage_battery_cell[4];
 
+    float_t inside_pressure;
+    float_t inside_temperature;
+    float_t outside_temperature;
+
     uint16_t checksum;
 
-    void pack(std::vector<uint8_t>& container) override; // raspberry_cm4 to pult
+    void pack(std::vector<uint8_t> &container) override; // raspberry_cm4 to pult
 };
 
 #endif // STINGRAY_MESSAGES_NORMAL_H
