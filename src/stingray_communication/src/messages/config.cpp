@@ -128,6 +128,7 @@ bool RequestConfigMessage::parse(std::vector<uint8_t>& input) {
     popFromVector(input, march);
 
     popFromVector(input, current_loop);
+    popFromVector(input, control_mode);
     popFromVector(input, stab_flags);
     popFromVector(input, flags);
     popFromVector(input, connection_status);
@@ -145,6 +146,10 @@ bool RequestConfigMessage::parse(std::vector<uint8_t>& input) {
     stab_roll = pickBit(stab_flags, 3);
     stab_pitch = pickBit(stab_flags, 4);
     stab_yaw = pickBit(stab_flags, 5);
+
+    control_handle = pickBit(control_mode, 0);
+    control_auto = pickBit(control_mode, 1);
+    control_maneuverable = pickBit(control_mode, 2);
 
     current_march = pickBit(current_loop, 0);
     current_lag = pickBit(current_loop, 1);
