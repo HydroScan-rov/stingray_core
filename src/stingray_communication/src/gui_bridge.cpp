@@ -23,7 +23,7 @@ GuiBridgeSender::~GuiBridgeSender() { _send_socket.close(); }
 void GuiBridgeSender::from_bridge_callback(const std_msgs::msg::UInt8MultiArray& msg) {
     boost::system::error_code err;
     _send_socket.send_to(boost::asio::buffer(msg.data), _send_endpoint, 0, err);
-    RCLCPP_INFO(this->get_logger(), "Sent to gui %s", err.message().c_str());
+    // RCLCPP_INFO(this->get_logger(), "Sent to gui %s", err.message().c_str());
 }
 
 GuiBridgeReceiver::GuiBridgeReceiver(boost::asio::io_service& io_service)
